@@ -1,15 +1,29 @@
 package main
 
-import (
-	"fmt"
-)
+type Animal interface {
+	walk() string
+	getName() string
+}
+
+type Cat struct {
+	Name   string
+	Weight int
+}
+
+func (cat *Cat) walk() string {
+	return "Cat is walking"
+}
+
+func (cat *Cat) getName() string {
+	return "Cat's name is name"
+}
 
 func main() {
-	fmt.Println("Motel app say to you")
+	cat := Cat{Name: "Cat", Weight: 15}
 
-	newMap := make(map[string][]string)
-	newSlice := []string{
-		"",
-		"",
-	}
+	PrintAnimal(&cat)
+}
+
+func PrintAnimal(animal Animal) {
+	println(animal.getName())
 }

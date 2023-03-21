@@ -7,8 +7,8 @@ import (
 )
 
 func Template(w http.ResponseWriter, templateRootFileName string) {
-	const extension = ".page.tmpl"
-	parsedTemplate, err := template2.ParseFiles("./templates/" + templateRootFileName + extension)
+	const extension = ".page.gohtml"
+	parsedTemplate, err := template2.ParseFiles("./templates/"+templateRootFileName+extension, "./templates/base.layout.gohtml")
 
 	if err != nil {
 		log.Println("cannot read parsedTemplate, error :", err)

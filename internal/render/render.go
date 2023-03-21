@@ -1,26 +1,61 @@
 package render
 
 import (
-	template2 "html/template"
+	"fmt"
 	"log"
 	"net/http"
+	"text/template"
 )
 
-func Template(w http.ResponseWriter, templateRootFileName string) {
-	const extension = ".page.gohtml"
-	parsedTemplate, err := template2.ParseFiles("./templates/"+templateRootFileName+extension, "./templates/base.layout.gohtml")
+var templatesCache = make(map[string]*template.Template)
 
-	if err != nil {
-		log.Println("cannot read parsedTemplate, error :", err)
+func Template(writer http.ResponseWriter, templateFirstName string) error {
+	templateFromCache, existsInCache := templatesCache[templateFirstName]
 
-		return
+	if !existsInCache {
+		err := createTemplateCache(templateFirstName)
+
+		if err != nil {
+			log.Println("[package render]:[func Template] - cannot create template cache")
+
+			return err
+		}
+
+		templateFromCache = templatesCache[templateFirstName]
 	}
 
-	err = parsedTemplate.Execute(w, nil)
+	err := templateFromCache.Execute(writer, nil)
 
 	if err != nil {
-		log.Println("cannot execute parsedTemplate to response writer, error :", err)
+		log.Println("[package render]:[func Template] - cannot execute template from cache")
 
-		return
+		return err
 	}
+
+	return nil
+}
+
+func createTemplateCache(templateName string) error {
+	const layout = "./templates/base.layout.gohtml"
+
+	const pageExtension = "page.gohtml"
+	page := fmt.Sprintf("./templates/%s.%s", templateName, pageExtension)
+
+	pageAndLayout := []string{
+		page,
+		layout,
+	}
+
+	// This file is a result of merging page with layout
+	parsedMergedTemplate, err := template.ParseFiles(pageAndLayout...)
+
+	if err != nil {
+		log.Println("[package render]:[func createTemplateCache] - cannot parse files")
+
+		return err
+	}
+
+	templatesCache[templateName] = parsedMergedTemplate
+
+	return nil
 }

@@ -1,29 +1,21 @@
 package main
 
-type Animal interface {
-	walk() string
-	getName() string
-}
-
-type Cat struct {
-	Name   string
-	Weight int
-}
-
-func (cat *Cat) walk() string {
-	return "Cat is walking"
-}
-
-func (cat *Cat) getName() string {
-	return "Cat's name is name"
-}
+import (
+	"io"
+	"log"
+	"net/http"
+)
 
 func main() {
-	cat := Cat{Name: "Cat", Weight: 15}
+	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
+		_, err := io.WriteString(writer, "Main page")
 
-	PrintAnimal(&cat)
-}
+		if err != nil {
+			log.Fatal(err)
+		}
+	})
 
-func PrintAnimal(animal Animal) {
-	println(animal.getName())
+	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
+		log.Fatal("cannot start server. Error :", err)
+	}
 }

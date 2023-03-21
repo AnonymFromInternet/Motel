@@ -7,7 +7,8 @@ import (
 )
 
 func GetHandlerMainPage(writer http.ResponseWriter, request *http.Request) {
-	err := render.Template(writer, "main")
+	const fileName = "main.page.gohtml"
+	err := render.Template(writer, fileName)
 
 	if err != nil {
 		log.Println("cannot render template with name 'main'")
@@ -15,7 +16,8 @@ func GetHandlerMainPage(writer http.ResponseWriter, request *http.Request) {
 }
 
 func GetHandlerContactsPage(writer http.ResponseWriter, request *http.Request) {
-	err := render.Template(writer, "contacts")
+	const fileName = "contacts.page.gohtml"
+	err := render.Template(writer, fileName)
 
 	if err != nil {
 		log.Println("cannot render template with name 'contacts'")

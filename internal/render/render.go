@@ -1,61 +1,79 @@
 package render
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"path/filepath"
 	"text/template"
 )
 
-var templatesCache = make(map[string]*template.Template)
-
 func Template(writer http.ResponseWriter, templateFirstName string) error {
-	templateFromCache, existsInCache := templatesCache[templateFirstName]
+	templatesCache, err := createTemplatesCache()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	if !existsInCache {
-		err := createTemplateCache(templateFirstName)
+	templateCache, templateExistsInCache := templatesCache[templateFirstName]
 
+	if templateExistsInCache {
+		// Хорошей практикой является использовать буфер, и только потом Execute для более точного отлова ошибок
+		buf := new(bytes.Buffer)
+
+		err = templateCache.Execute(buf, nil)
 		if err != nil {
-			log.Println("[package render]:[func Template] - cannot create template cache")
+			fmt.Println(err)
 
 			return err
 		}
 
-		templateFromCache = templatesCache[templateFirstName]
-	}
-
-	err := templateFromCache.Execute(writer, nil)
-
-	if err != nil {
-		log.Println("[package render]:[func Template] - cannot execute template from cache")
-
-		return err
+		_, err = buf.WriteTo(writer)
+		if err != nil {
+			return err
+		}
+	} else {
+		log.Fatal(errors.New("false file name! template for this file name cannot be exist"))
 	}
 
 	return nil
 }
 
-func createTemplateCache(templateName string) error {
-	const layout = "./templates/base.layout.gohtml"
+func createTemplatesCache() (map[string]*template.Template, error) {
+	templatesCache := map[string]*template.Template{}
 
-	const pageExtension = "page.gohtml"
-	page := fmt.Sprintf("./templates/%s.%s", templateName, pageExtension)
-
-	pageAndLayout := []string{
-		page,
-		layout,
-	}
-
-	// This file is a result of merging page with layout
-	parsedMergedTemplate, err := template.ParseFiles(pageAndLayout...)
-
+	pageFullFileNames, err := filepath.Glob("./templates/*.page.gohtml")
 	if err != nil {
-		log.Println("[package render]:[func createTemplateCache] - cannot parse files")
+		fmt.Println(err)
 
-		return err
+		return templatesCache, err
 	}
 
-	templatesCache[templateName] = parsedMergedTemplate
+	for _, templateFileFullPathWithName := range pageFullFileNames {
+		fileName := filepath.Base(templateFileFullPathWithName)
 
-	return nil
+		tmpl, err := template.New(fileName).ParseFiles(templateFileFullPathWithName)
+		if err != nil {
+			return templatesCache, err
+		}
+
+		layoutFullFileNames, err := filepath.Glob("./templates/*.layout.gohtml")
+		if err != nil {
+			return templatesCache, err
+		}
+
+		if len(layoutFullFileNames) > 0 {
+			// Merging already existing data from page.gohtml with layout.gohtml
+			// А что будет, если будет несколько файлов .layout.gohtml? Скорее всего ошибка
+			tmpl, err = tmpl.ParseGlob("./templates/*.layout.gohtml")
+			if err != nil {
+				return templatesCache, err
+			}
+		}
+
+		templatesCache[fileName] = tmpl
+	}
+
+	return templatesCache, nil
 }

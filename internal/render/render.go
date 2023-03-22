@@ -5,14 +5,28 @@ import (
 	"errors"
 	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
+	"github.com/AnonymFromInternet/Motel/internal/templatesCache"
 	"log"
 	"net/http"
+	"text/template"
 )
 
 var appConfiguration *app.Config
 
 func Template(writer http.ResponseWriter, templateFirstName string) error {
-	templateCache, templateExistsInCache := appConfiguration.TemplatesCache[templateFirstName]
+	var templates map[string]*template.Template
+	var err error
+
+	if appConfiguration.IsDevelopmentMode {
+		templates, err = templatesCache.Create()
+		if err != nil {
+			log.Fatal("[package render]:[func Template] - cannot create template cache")
+		}
+	} else {
+		templates = appConfiguration.TemplatesCache
+	}
+
+	templateCache, templateExistsInCache := templates[templateFirstName]
 
 	if templateExistsInCache {
 		// Хорошей практикой является использовать буфер, и только потом Execute для более точного отлова ошибок

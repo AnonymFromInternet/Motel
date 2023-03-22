@@ -6,7 +6,7 @@ import (
 )
 
 type Config struct {
-	UseCache       bool
-	TemplatesCache map[string]*template.Template
-	InfoLogger     *log.Logger
+	IsDevelopmentMode bool
+	TemplatesCache    map[string]*template.Template
+	InfoLogger        *log.Logger
 }

@@ -19,11 +19,15 @@ func main() {
 	if err != nil {
 		log.Fatal("[package main]:[func main] - cannot get app config")
 	}
+	appConfig.IsDevelopmentMode = true
+
+	repository := handlers.CreateNewRepository(&appConfig)
+	handlers.AsksToGetTheRepository(repository)
 
 	render.AsksToGetTheAppConfig(&appConfig)
 
-	http.HandleFunc("/main", handlers.GetHandlerMainPage)
-	http.HandleFunc("/contacts", handlers.GetHandlerContactsPage)
+	http.HandleFunc("/main", repository.GetHandlerMainPage)
+	http.HandleFunc("/contacts", repository.GetHandlerContactsPage)
 
 	if err := http.ListenAndServe(portNumber, nil); err != nil {
 		log.Fatal("cannot start server. Error :", err)

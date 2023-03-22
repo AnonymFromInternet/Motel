@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
+	"github.com/AnonymFromInternet/Motel/internal/models"
 	"github.com/AnonymFromInternet/Motel/internal/templatesCache"
 	"log"
 	"net/http"
@@ -13,7 +14,12 @@ import (
 
 var appConfiguration *app.Config
 
-func Template(writer http.ResponseWriter, templateFirstName string) error {
+func addDataToTemplate(templateData *models.TemplatesData) *models.TemplatesData {
+	// it is possible to add data here
+	return templateData
+}
+
+func Template(writer http.ResponseWriter, templateFirstName string, templateData *models.TemplatesData) error {
 	var templates map[string]*template.Template
 	var err error
 
@@ -32,7 +38,9 @@ func Template(writer http.ResponseWriter, templateFirstName string) error {
 		// Хорошей практикой является использовать буфер, и только потом Execute для более точного отлова ошибок
 		buffer := new(bytes.Buffer)
 
-		err := templateCache.Execute(buffer, nil)
+		templateData = addDataToTemplate(templateData)
+
+		err := templateCache.Execute(buffer, templateData)
 		if err != nil {
 			fmt.Println(err)
 

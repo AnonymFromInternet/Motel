@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/AnonymFromInternet/Motel/internal/app"
+	"github.com/AnonymFromInternet/Motel/internal/models"
 	"github.com/AnonymFromInternet/Motel/internal/render"
 	"log"
 	"net/http"
@@ -11,7 +12,7 @@ type Repository struct {
 	AppConfig *app.Config
 }
 
-var repo *Repository
+var Repo *Repository
 
 func CreateNewRepository(appConfig *app.Config) *Repository {
 	return &Repository{
@@ -20,12 +21,12 @@ func CreateNewRepository(appConfig *app.Config) *Repository {
 }
 
 func AsksToGetTheRepository(repository *Repository) {
-	repo = repository
+	Repo = repository
 }
 
 func (repository *Repository) GetHandlerMainPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "main.page.gohtml"
-	err := render.Template(writer, fileName)
+	err := render.Template(writer, fileName, &models.TemplatesData{})
 
 	if err != nil {
 		log.Println("cannot render template with name 'main'")
@@ -34,7 +35,10 @@ func (repository *Repository) GetHandlerMainPage(writer http.ResponseWriter, req
 
 func (repository *Repository) GetHandlerContactsPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "contacts.page.gohtml"
-	err := render.Template(writer, fileName)
+	testData := make(map[string]interface{})
+	testData["testData"] = "Test Data"
+
+	err := render.Template(writer, fileName, &models.TemplatesData{BasicData: testData})
 
 	if err != nil {
 		log.Println("cannot render template with name 'contacts'")

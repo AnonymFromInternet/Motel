@@ -26,10 +26,13 @@ func main() {
 
 	render.AsksToGetTheAppConfig(&appConfig)
 
-	http.HandleFunc("/main", repository.GetHandlerMainPage)
-	http.HandleFunc("/contacts", repository.GetHandlerContactsPage)
+	server := &http.Server{
+		Addr:    portNumber,
+		Handler: getHandler(&appConfig),
+	}
 
-	if err := http.ListenAndServe(portNumber, nil); err != nil {
-		log.Fatal("cannot start server. Error :", err)
+	err = server.ListenAndServe()
+	if err != nil {
+		log.Fatal("cannot start server")
 	}
 }

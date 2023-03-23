@@ -17,5 +17,8 @@ func getHandler(appConfig *app.Config) http.Handler {
 	multiplexer.Get("/main", handlers.Repo.GetHandlerMainPage)
 	multiplexer.Get("/contacts", handlers.Repo.GetHandlerContactsPage)
 
+	fileServer := http.FileServer(http.Dir("./static/")) // путь указывается относительно рута
+	multiplexer.Handle("/static/*", http.StripPrefix("/static/", fileServer))
+
 	return multiplexer
 }

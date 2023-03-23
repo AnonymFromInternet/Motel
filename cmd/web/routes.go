@@ -11,8 +11,8 @@ import (
 func getHandler(appConfig *app.Config) http.Handler {
 	multiplexer := chi.NewRouter()
 	multiplexer.Use(middleware.Recoverer)
-	multiplexer.Use(CSRFMiddleware)
 	multiplexer.Use(SessionLoadMiddleware)
+	multiplexer.Use(CSRFMiddleware)
 
 	multiplexer.Get("/main", handlers.Repo.GetHandlerMainPage)
 	multiplexer.Get("/about", handlers.Repo.GetHandlerAboutPage)
@@ -21,6 +21,8 @@ func getHandler(appConfig *app.Config) http.Handler {
 	multiplexer.Get("/contacts", handlers.Repo.GetHandlerContactsPage)
 	multiplexer.Get("/availability", handlers.Repo.GetHandlerAvailabilityPage)
 	multiplexer.Get("/reservation", handlers.Repo.GetHandlerReservationPage)
+
+	multiplexer.Post("/availability", handlers.Repo.PostHandlerAvailabilityPage)
 
 	fileServer := http.FileServer(http.Dir("./static/")) // путь указывается относительно рута
 	multiplexer.Handle("/static/*", http.StripPrefix("/static/", fileServer))

@@ -1,3 +1,5 @@
+{{template "base" .}}
+
 <div>
     {{ block "js" .}}
 
@@ -14,7 +16,12 @@
 
         <div class="row">
             <div class="col">
-                <form action="/availability" method="get">
+                <form action="/availability" method="post">
+
+                    <label for="CSRFToken">
+                        <input type="text" id="CSRFToken" name="csrf_token" value="{{.CSRFToken}}"/>
+                    </label>
+
                     <div class="mb-3 mt-3">
                         <label for="start-date" class="form-label">Start date</label>
                         <input type="date" required class="form-control" id="start-date" name="start-date">

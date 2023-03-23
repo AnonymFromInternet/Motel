@@ -7,6 +7,7 @@ import (
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/models"
 	"github.com/AnonymFromInternet/Motel/internal/templatesCache"
+	"github.com/justinas/nosurf"
 	"log"
 	"net/http"
 	"text/template"
@@ -14,31 +15,35 @@ import (
 
 var appConfiguration *app.Config
 
-func addDataToTemplate(templateData *models.TemplatesData) *models.TemplatesData {
+func addDataToTemplate(templateData *models.TemplatesData, request *http.Request) *models.TemplatesData {
 	// it is possible to add data here
+	templateData.CSRFToken = nosurf.Token(request)
 	return templateData
 }
 
-func Template(writer http.ResponseWriter, templateFirstName string, templateData *models.TemplatesData) error {
+func Template(writer http.ResponseWriter, request *http.Request, templateFirstName string, templateData *models.TemplatesData) error {
+	fmt.Println("Template")
 	var templates map[string]*template.Template
 	var err error
 
 	if appConfiguration.IsDevelopmentMode {
+		fmt.Println("IsDevelopmentMode")
 		templates, err = templatesCache.Create()
 		if err != nil {
 			log.Fatal("[package render]:[func Template] - cannot create template cache")
 		}
 	} else {
+		fmt.Println("ELSE")
 		templates = appConfiguration.TemplatesCache
 	}
 
 	templateCache, templateExistsInCache := templates[templateFirstName]
 
 	if templateExistsInCache {
+		templateData = addDataToTemplate(templateData, request)
+
 		// Хорошей практикой является использовать буфер, и только потом Execute, для более точного отлова ошибок
 		buffer := new(bytes.Buffer)
-
-		templateData = addDataToTemplate(templateData)
 
 		err := templateCache.Execute(buffer, templateData)
 		if err != nil {

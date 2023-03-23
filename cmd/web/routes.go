@@ -12,6 +12,7 @@ func getHandler(appConfig *app.Config) http.Handler {
 	multiplexer := chi.NewRouter()
 	multiplexer.Use(middleware.Recoverer)
 	multiplexer.Use(CSRFMiddleware)
+	multiplexer.Use(SessionLoadMiddleware)
 
 	multiplexer.Get("/main", handlers.Repo.GetHandlerMainPage)
 	multiplexer.Get("/contacts", handlers.Repo.GetHandlerContactsPage)

@@ -20,7 +20,7 @@ func CreateNewRepository(appConfig *app.Config) *Repository {
 	}
 }
 
-func AsksToGetTheRepository(repository *Repository) {
+func AreAskingToGetTheRepository(repository *Repository) {
 	Repo = repository
 }
 

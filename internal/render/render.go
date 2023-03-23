@@ -35,7 +35,7 @@ func Template(writer http.ResponseWriter, templateFirstName string, templateData
 	templateCache, templateExistsInCache := templates[templateFirstName]
 
 	if templateExistsInCache {
-		// Хорошей практикой является использовать буфер, и только потом Execute для более точного отлова ошибок
+		// Хорошей практикой является использовать буфер, и только потом Execute, для более точного отлова ошибок
 		buffer := new(bytes.Buffer)
 
 		templateData = addDataToTemplate(templateData)

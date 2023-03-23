@@ -1,0 +1,33 @@
+<div>
+    {{block "css" .}}
+    {{end}}
+
+    {{block "js" .}}
+    {{end}}
+
+    <div class="container">
+        <div class="row">
+            <form action="/reservation" method="post">
+                <div class="col">
+                    <h1>Make reservation</h1>
+
+                    <div class="form-group">
+                        <label for="first-name">Please enter your first name</label>
+                        <input name="first-name" id="first-name" type="text" required />
+
+                        <label for="last-name">Please enter your last name</label>
+                        <input name="last-name" id="last-name" type="text" required />
+
+                        <label for="phone-number">Please enter your phone number</label>
+                        <input name="phone-number" id="phone-number" type="number" required />
+
+                        <label for="email">Please enter your email</label>
+                        <input name="email" id="email" type="email" required />
+
+                        <button type="submit" class="btn btn-primary">Make reservation</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

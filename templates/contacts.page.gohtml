@@ -1,7 +1,13 @@
-{{ template "base" .}}
+<div>
+    {{ block "js" .}}
 
-{{ define "content" }}
-    <div class="container">
+    {{ end }}
+
+    {{ block "css" .}}
+
+    {{ end }}
+
+    <div class="container mt-5">
         <div>{{ index .BasicData "testData" }}</div>
         <div class="row">
             <div class="col">
@@ -9,4 +15,5 @@
             </div>
         </div>
     </div>
-{{ end }}
+
+</div>

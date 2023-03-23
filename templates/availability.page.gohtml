@@ -1,0 +1,37 @@
+<div>
+    {{ block "js" .}}
+
+    {{ end }}
+
+    {{ block "css" .}}
+
+    {{ end }}
+
+    <div class="container mt-5">
+        <h1 class="row">
+            Search for availability
+        </h1>
+
+        <div class="row">
+            <div class="col">
+                <form action="/availability" method="get">
+                    <div class="mb-3 mt-3">
+                        <label for="start-date" class="form-label">Start date</label>
+                        <input type="date" required class="form-control" id="start-date" name="start-date">
+                        <div id="start-date" class="form-text">Please enter a start date</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="end-date" class="form-label">End date</label>
+                        <input type="date" required class="form-control" id="end-date" name="end-date">
+                        <div id="end-date" class="form-text">Please enter an end date</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Check availability</button>
+                </form>
+            </div>
+
+            <div class="col"></div>
+
+            <div class="col"></div>
+        </div>
+     </div>
+</div>

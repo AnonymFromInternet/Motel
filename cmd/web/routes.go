@@ -15,7 +15,12 @@ func getHandler(appConfig *app.Config) http.Handler {
 	multiplexer.Use(SessionLoadMiddleware)
 
 	multiplexer.Get("/main", handlers.Repo.GetHandlerMainPage)
+	multiplexer.Get("/about", handlers.Repo.GetHandlerAboutPage)
+	multiplexer.Get("/room", handlers.Repo.GetHandlerRoomPage)
+	multiplexer.Get("/blue-room", handlers.Repo.GetHandlerBlueRoomPage)
 	multiplexer.Get("/contacts", handlers.Repo.GetHandlerContactsPage)
+	multiplexer.Get("/availability", handlers.Repo.GetHandlerAvailabilityPage)
+	multiplexer.Get("/reservation", handlers.Repo.GetHandlerReservationPage)
 
 	fileServer := http.FileServer(http.Dir("./static/")) // путь указывается относительно рута
 	multiplexer.Handle("/static/*", http.StripPrefix("/static/", fileServer))

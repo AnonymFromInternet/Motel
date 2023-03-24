@@ -1,44 +1,130 @@
-{{template "base" .}}
+{{ template "base" .}}
 
-<div>
-    {{ block "js" .}}
-
-    {{ end }}
-
-    {{ block "css" .}}
-
-    {{ end }}
-
-    <div class="container mt-5">
-        <h1 class="row">
-            Search for availability
-        </h1>
+{{ define "content" }}
+    <div>
+        <div class="container mt-5">
+            <h1 class="row">
+                Search for availability
+            </h1>
 
         <div class="row">
             <div class="col">
-                <form action="/availability" method="post">
+                <form action="/reservation" method="post" id="reservation-form">
 
-                    <label for="CSRFToken">
-                        <input type="hidden" id="CSRFToken" name="csrf_token" value="{{.CSRFToken}}"/>
-                    </label>
+                        <label for="CSRFToken">
+                            <input type="hidden" id="CSRFToken" name="csrf_token" value="{{ .CSRFToken }}"/>
+                        </label>
 
-                    <div class="mb-3 mt-3">
-                        <label for="start-date" class="form-label">Start date</label>
-                        <input type="date" required class="form-control" id="start-date" name="start-date">
-                        <div id="start-date" class="form-text">Please enter a start date</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="end-date" class="form-label">End date</label>
-                        <input type="date" required class="form-control" id="end-date" name="end-date">
-                        <div id="end-date" class="form-text">Please enter an end date</div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Check availability</button>
-                </form>
+                        <div class="mb-3 mt-3">
+                            <label for="start-date" class="form-label">Start date</label>
+                            <input type="date" required class="form-control" id="start-date" name="start-date">
+                            <div id="start" class="form-text">Please enter a start date</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end-date" class="form-label">End date</label>
+                            <input type="date" required class="form-control" id="end-date" name="end-date">
+                            <div id="end" class="form-text">Please enter an end date</div>
+                        </div>
+                        <button onclick="clickListener()" id="form-button" type="button" class="btn btn-primary">Check availability</button>
+                    </form>
+                </div>
+
+                <div class="col"></div>
+
+                <div class="col"></div>
             </div>
+         </div>
+    </div>
 
-            <div class="col"></div>
-
-            <div class="col"></div>
+    <div class="modal fade" tabindex="-1" id="alert-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">You should first choose dates</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please choose start and end dates</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary text-center" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
-     </div>
-</div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="go-to-reservation-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Room is free for the chosen dates</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Now you can go to the reservation page</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Go to reservation page</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="no-free-room-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">Room is unfortunately not free for chosen dates</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please choose another dates</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary text-center" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const clickListener = () => {
+            const startDate = document.getElementById("start-date").value
+            const endDate = document.getElementById("end-date").value
+            const form = document.getElementById("reservation-form")
+            const formData = new FormData(form)
+
+            formData.append("csrf_token", "{{ .CSRFToken }}")
+
+
+            if (startDate && endDate) {
+                fetch("/availability-json", {
+                    method: "POST",
+                    body: formData,
+                })
+                    .then(response => {
+                        return response.json()
+                    })
+                    .then(data => {
+                        if (data.isAvailable) {
+                            showModal("go-to-reservation-modal")
+                        } else {
+                            showModal("no-free-room-modal")
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            } else {
+                showModal("alert-modal")
+            }
+        }
+
+        const showModal = (id) => {
+            const modal = new bootstrap.Modal(document.getElementById(id), {})
+            modal.show()
+        }
+
+    </script>
+{{ end }}

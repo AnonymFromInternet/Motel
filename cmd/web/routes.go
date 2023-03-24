@@ -23,6 +23,7 @@ func getHandler(appConfig *app.Config) http.Handler {
 	multiplexer.Get("/reservation", handlers.Repo.GetHandlerReservationPage)
 
 	multiplexer.Post("/availability", handlers.Repo.PostHandlerAvailabilityPage)
+	multiplexer.Post("/availability-json", handlers.Repo.PostHandlerAvailabilityPageJSON)
 
 	fileServer := http.FileServer(http.Dir("./static/")) // путь указывается относительно рута
 	multiplexer.Handle("/static/*", http.StripPrefix("/static/", fileServer))

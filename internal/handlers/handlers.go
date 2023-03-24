@@ -107,7 +107,7 @@ type jsonResponse struct {
 
 func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.ResponseWriter, request *http.Request) {
 	var err error
-	response := jsonResponse{IsAvailable: false, Message: "Available"}
+	response := jsonResponse{IsAvailable: true, Message: "Available"}
 
 	responseInJsonFormat, err := json.MarshalIndent(response, "", " ")
 	if err != nil {

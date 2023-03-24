@@ -9,7 +9,7 @@
 
         <div class="row">
             <div class="col">
-                <form action="/reservation" method="post" id="reservation-form">
+                <form id="reservation-form" method="get" action="/reservation">
 
                         <label for="CSRFToken">
                             <input type="hidden" id="CSRFToken" name="csrf_token" value="{{ .CSRFToken }}"/>
@@ -26,6 +26,25 @@
                             <div id="end" class="form-text">Please enter an end date</div>
                         </div>
                         <button onclick="clickListener()" id="form-button" type="button" class="btn btn-primary">Check availability</button>
+
+                    <div class="modal fade" tabindex="-1" id="go-to-reservation-modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Room is free for the chosen dates</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Now you can go to the reservation page</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button  type="submit" class="btn btn-primary">Go to reservation page</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     </form>
                 </div>
 
@@ -48,24 +67,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary text-center" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" tabindex="-1" id="go-to-reservation-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Room is free for the chosen dates</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Now you can go to the reservation page</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Go to reservation page</button>
                 </div>
             </div>
         </div>

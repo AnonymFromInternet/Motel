@@ -82,12 +82,11 @@ func (repository *Repository) GetHandlerAvailabilityPage(writer http.ResponseWri
 }
 
 func (repository *Repository) PostHandlerAvailabilityPage(writer http.ResponseWriter, request *http.Request) {
-	writer.Write([]byte("TEST"))
-	// const fileName = "availability.page.gohtml"
-	// err := render.Template(writer, request, fileName, &models.TemplatesData{})
-	// if err != nil {
-	// 	log.Println("cannot render template with name 'availability: [method:post]'")
-	// }
+	const fileName = "availability.page.gohtml"
+	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	if err != nil {
+		log.Println("cannot render template with name 'availability: [method:post]'")
+	}
 }
 
 func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {

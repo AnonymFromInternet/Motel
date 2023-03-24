@@ -22,18 +22,15 @@ func addDataToTemplate(templateData *models.TemplatesData, request *http.Request
 }
 
 func Template(writer http.ResponseWriter, request *http.Request, templateFirstName string, templateData *models.TemplatesData) error {
-	fmt.Println("Template")
 	var templates map[string]*template.Template
 	var err error
 
 	if appConfiguration.IsDevelopmentMode {
-		fmt.Println("IsDevelopmentMode")
 		templates, err = templatesCache.Create()
 		if err != nil {
 			log.Fatal("[package render]:[func Template] - cannot create template cache")
 		}
 	} else {
-		fmt.Println("ELSE")
 		templates = appConfiguration.TemplatesCache
 	}
 

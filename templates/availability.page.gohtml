@@ -19,7 +19,7 @@
                 <form action="/availability" method="post">
 
                     <label for="CSRFToken">
-                        <input type="text" id="CSRFToken" name="csrf_token" value="{{.CSRFToken}}"/>
+                        <input type="hidden" id="CSRFToken" name="csrf_token" value="{{.CSRFToken}}"/>
                     </label>
 
                     <div class="mb-3 mt-3">

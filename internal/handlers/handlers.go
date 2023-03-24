@@ -131,3 +131,12 @@ func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWrit
 		log.Println("cannot render template with name 'reservation'")
 	}
 }
+
+func (repository *Repository) GetHandlerReservationConfirmPage(writer http.ResponseWriter, request *http.Request) {
+	const fileName = "reservationConfirm.page.gohtml"
+	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+
+	if err != nil {
+		log.Println("cannot render template with name 'reservationConfirm'")
+	}
+}

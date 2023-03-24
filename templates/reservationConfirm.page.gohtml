@@ -1,0 +1,37 @@
+{{ template "base" .}}
+
+{{ define "content" }}
+    <div class="container">
+            <form>
+                <fieldset disabled>
+                    <legend class="text-success mt-3">See you soon in our motel</legend>
+                    <p class="text-success">Your order data</p>
+                    <div class="mb-3">
+                        <label for="disabledTextInput" class="form-label">Email address</label>
+                        <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="disabledTextInput" class="form-label">First Name</label>
+                        <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="disabledTextInput" class="form-label">Last Name</label>
+                        <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="disabledTextInput" class="form-label">Room</label>
+                        <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="disabledTextInput" class="form-label">From to</label>
+                        <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                    </div>
+                    <div class="mb-3"></div>
+                </fieldset>
+            </form>
+    </div>
+{{ end }}

@@ -21,6 +21,7 @@ func getHandler(appConfig *app.Config) http.Handler {
 	multiplexer.Get("/contacts", handlers.Repo.GetHandlerContactsPage)
 	multiplexer.Get("/availability", handlers.Repo.GetHandlerAvailabilityPage)
 	multiplexer.Get("/reservation", handlers.Repo.GetHandlerReservationPage)
+	multiplexer.Get("/reservation-confirm", handlers.Repo.GetHandlerReservationConfirmPage)
 
 	multiplexer.Post("/availability", handlers.Repo.PostHandlerAvailabilityPage)
 	multiplexer.Post("/availability-json", handlers.Repo.PostHandlerAvailabilityPageJSON)

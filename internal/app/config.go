@@ -10,5 +10,6 @@ type Config struct {
 	IsDevelopmentMode bool
 	TemplatesCache    map[string]*template.Template
 	InfoLogger        *log.Logger
+	ErrorLogger       *log.Logger
 	Session           *scs.SessionManager
 }

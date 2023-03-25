@@ -3,11 +3,13 @@ package main
 import (
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/handlers"
+	"github.com/AnonymFromInternet/Motel/internal/helpers"
 	"github.com/AnonymFromInternet/Motel/internal/render"
 	"github.com/AnonymFromInternet/Motel/internal/templatesCache"
 	"github.com/alexedwards/scs/v2"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -44,6 +46,9 @@ func prepareAppDataBeforeRun() error {
 	}
 	appConfig.IsDevelopmentMode = true
 
+	appConfig.InfoLogger = log.New(os.Stdout, "[INFO]:\n", log.Ldate|log.Ltime)
+	appConfig.ErrorLogger = log.New(os.Stdout, "[ERROR]:\n", log.Ldate|log.Ltime|log.Lshortfile)
+
 	session = scs.New()
 	session.Lifetime = 15 * time.Hour
 	session.Cookie.Persist = true
@@ -52,9 +57,10 @@ func prepareAppDataBeforeRun() error {
 	appConfig.Session = session
 
 	repository := handlers.CreateNewRepository(&appConfig)
-	handlers.AreAskingToGetTheRepository(repository)
 
+	handlers.AreAskingToGetTheRepository(repository)
 	render.AsksToGetTheAppConfig(&appConfig)
+	helpers.AreAskingToGetAppConfig(&appConfig)
 
 	return nil
 }

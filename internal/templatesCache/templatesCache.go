@@ -6,10 +6,14 @@ import (
 	"text/template"
 )
 
+var pathToFilesForTests = "../../templates/"
+
+// var pathToFilesForProduction = "./templates/"
+
 func Create() (map[string]*template.Template, error) {
 	templatesCache := map[string]*template.Template{}
 
-	pagesFullFileNames, err := filepath.Glob("./templates/*.page.gohtml")
+	pagesFullFileNames, err := filepath.Glob(fmt.Sprintf("%s*.page.gohtml", pathToFilesForTests))
 	if err != nil {
 		fmt.Println(err)
 
@@ -24,7 +28,7 @@ func Create() (map[string]*template.Template, error) {
 			return templatesCache, err
 		}
 
-		layoutFullFileNames, err := filepath.Glob("./templates/*.layout.gohtml")
+		layoutFullFileNames, err := filepath.Glob(fmt.Sprintf("%s*.layout.gohtml", pathToFilesForTests))
 		if err != nil {
 			return templatesCache, err
 		}
@@ -32,7 +36,7 @@ func Create() (map[string]*template.Template, error) {
 		if len(layoutFullFileNames) > 0 {
 			// Merging already existing data from page.gohtml with layout.gohtml
 			// А что будет, если будет несколько файлов .layout.gohtml? Скорее всего ошибка
-			tmpl, err = tmpl.ParseGlob("./templates/*.layout.gohtml")
+			tmpl, err = tmpl.ParseGlob(fmt.Sprintf("%s*.layout.gohtml", pathToFilesForTests))
 			if err != nil {
 				return templatesCache, err
 			}

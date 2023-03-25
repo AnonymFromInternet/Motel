@@ -3,9 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/AnonymFromInternet/Motel/internal/app"
+	"github.com/AnonymFromInternet/Motel/internal/helpers"
 	"github.com/AnonymFromInternet/Motel/internal/models"
 	"github.com/AnonymFromInternet/Motel/internal/render"
-	"log"
 	"net/http"
 )
 
@@ -28,9 +28,8 @@ func AreAskingToGetTheRepository(repository *Repository) {
 func (repository *Repository) GetHandlerMainPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "main.page.gohtml"
 	err := render.Template(writer, request, fileName, &models.TemplatesData{})
-
 	if err != nil {
-		log.Println("cannot render template with name 'main'")
+		helpers.LogServerError(writer, err)
 	}
 }
 
@@ -40,36 +39,32 @@ func (repository *Repository) GetHandlerContactsPage(writer http.ResponseWriter,
 	testData["testData"] = "Test Data"
 
 	err := render.Template(writer, request, fileName, &models.TemplatesData{BasicData: testData})
-
 	if err != nil {
-		log.Println("cannot render template with name 'contacts'")
+		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) GetHandlerAboutPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "about.page.gohtml"
 	err := render.Template(writer, request, fileName, &models.TemplatesData{})
-
 	if err != nil {
-		log.Println("cannot render template with name 'about'")
+		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) GetHandlerRoomPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "room.page.gohtml"
 	err := render.Template(writer, request, fileName, &models.TemplatesData{})
-
 	if err != nil {
-		log.Println("cannot render template with name 'room'")
+		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) GetHandlerBlueRoomPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "blueRoom.page.gohtml"
 	err := render.Template(writer, request, fileName, &models.TemplatesData{})
-
 	if err != nil {
-		log.Println("cannot render template with name 'blueRoom'")
+		helpers.LogServerError(writer, err)
 	}
 }
 
@@ -78,7 +73,7 @@ func (repository *Repository) GetHandlerAvailabilityPage(writer http.ResponseWri
 	err := render.Template(writer, request, fileName, &models.TemplatesData{})
 
 	if err != nil {
-		log.Println("cannot render template with name 'availability'")
+		helpers.LogServerError(writer, err)
 	}
 }
 
@@ -96,7 +91,7 @@ func (repository *Repository) PostHandlerAvailabilityPage(writer http.ResponseWr
 		BasicData: basicData,
 	})
 	if err != nil {
-		log.Println("cannot render template with name 'availability: [method:post]'")
+		helpers.LogServerError(writer, err)
 	}
 }
 
@@ -111,14 +106,14 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 
 	responseInJsonFormat, err := json.MarshalIndent(response, "", " ")
 	if err != nil {
-		log.Println("cannot convert response data to JSON")
+		helpers.LogServerError(writer, err)
 		return
 	}
 
 	writer.Header().Set("Content-Type", "application/json")
 	_, err = writer.Write(responseInJsonFormat)
 	if err != nil {
-		log.Println("cannot convert response data to JSON")
+		helpers.LogServerError(writer, err)
 		return
 	}
 }
@@ -126,17 +121,15 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "reservation.page.gohtml"
 	err := render.Template(writer, request, fileName, &models.TemplatesData{})
-
 	if err != nil {
-		log.Println("cannot render template with name 'reservation'")
+		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) GetHandlerReservationConfirmPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "reservationConfirm.page.gohtml"
 	err := render.Template(writer, request, fileName, &models.TemplatesData{})
-
 	if err != nil {
-		log.Println("cannot render template with name 'reservationConfirm'")
+		helpers.LogServerError(writer, err)
 	}
 }

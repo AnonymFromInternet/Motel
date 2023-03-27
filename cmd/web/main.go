@@ -67,7 +67,7 @@ func prepareAppDataBeforeRun() (*driver.DataBaseConnectionPool, error) {
 	// Connection to the database
 	dataBaseConnectionPool, err := driver.GetDataBaseConnectionPool("host=localhost port=5432 dbname=Motel user=arturkeil password=")
 	if err != nil {
-		log.Fatal("cannot get dataBaseConnectionPool")
+		log.Fatal("[main]:[prepareAppDataBeforeRun] - cannot get dataBaseConnectionPool")
 	}
 
 	repositoryFromHandlersPkg := handlers.CreateNewRepository(&appConfig, dataBaseConnectionPool)

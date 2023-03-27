@@ -2,12 +2,11 @@ package driver
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 
-	_ "github.com/jackc/pgx/v5"
-	_ "github.com/jackc/pgx/v5/pgconn"
-	_ "github.com/jackc/pgx/v5/stdlib"
+	_ "github.com/jackc/pgconn"
+	_ "github.com/jackc/pgx/v4"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 type DataBaseConnectionPool struct {
@@ -53,15 +52,6 @@ func getSqlDBConnPool(dataSourceName string) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("db :", db)
-
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			fmt.Println("cannot close a database connection")
-		}
-	}(db)
 
 	if err := db.Ping(); err != nil {
 		return nil, err

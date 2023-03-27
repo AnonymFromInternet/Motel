@@ -2,10 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"encoding/gob"
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/handlers"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
+	"github.com/AnonymFromInternet/Motel/internal/models"
 	"github.com/AnonymFromInternet/Motel/internal/render"
 	"github.com/AnonymFromInternet/Motel/internal/templatesCache"
 	"github.com/alexedwards/scs/v2"
@@ -45,6 +47,12 @@ func main() {
 
 // Скорее всего нужно будет переименовать
 func prepareAppDataBeforeRun() (*driver.DataBaseConnectionPool, error) {
+	// Вроде это не обязательно
+	gob.Register(models.User{})
+	gob.Register(models.Reservation{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+
 	var err error
 
 	appConfig.TemplatesCache, err = templatesCache.Create()

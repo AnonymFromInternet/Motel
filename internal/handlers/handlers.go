@@ -13,16 +13,16 @@ import (
 )
 
 type Repository struct {
-	AppConfig      *app.Config
-	PostgresDBRepo repository.DataBaseRepoInterface
+	AppConfig             *app.Config
+	DataBaseRepoInterface repository.DataBaseRepoInterface
 }
 
 var Repo *Repository
 
 func CreateNewRepository(appConfig *app.Config, dbConnPool *driver.DataBaseConnectionPool) *Repository {
 	return &Repository{
-		AppConfig:      appConfig,
-		PostgresDBRepo: repository2.GetPostgresDBRepo(appConfig, dbConnPool.SQL),
+		AppConfig:             appConfig,
+		DataBaseRepoInterface: repository2.GetPostgresDBRepo(appConfig, dbConnPool.SQL),
 	}
 }
 

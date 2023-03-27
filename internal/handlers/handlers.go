@@ -3,21 +3,26 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/AnonymFromInternet/Motel/internal/app"
+	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
 	"github.com/AnonymFromInternet/Motel/internal/models"
 	"github.com/AnonymFromInternet/Motel/internal/render"
+	"github.com/AnonymFromInternet/Motel/internal/repository"
+	repository2 "github.com/AnonymFromInternet/Motel/internal/repository/dbRepo"
 	"net/http"
 )
 
 type Repository struct {
-	AppConfig *app.Config
+	AppConfig      *app.Config
+	PostgresDBRepo repository.DataBaseRepoInterface
 }
 
 var Repo *Repository
 
-func CreateNewRepository(appConfig *app.Config) *Repository {
+func CreateNewRepository(appConfig *app.Config, dbConnPool *driver.DataBaseConnectionPool) *Repository {
 	return &Repository{
-		AppConfig: appConfig,
+		AppConfig:      appConfig,
+		PostgresDBRepo: repository2.GetPostgresDBRepo(appConfig, dbConnPool.SQL),
 	}
 }
 

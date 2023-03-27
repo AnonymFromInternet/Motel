@@ -1,7 +1,9 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/AnonymFromInternet/Motel/internal/app"
+	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/handlers"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
 	"github.com/AnonymFromInternet/Motel/internal/render"
@@ -19,10 +21,16 @@ var appConfig app.Config
 var session *scs.SessionManager
 
 func main() {
-	err := prepareAppDataBeforeRun()
+	dataBaseConnectionPool, err := prepareAppDataBeforeRun()
 	if err != nil {
 		log.Fatal("cannot prepare app data before server starting")
 	}
+	defer func(SQL *sql.DB) {
+		err := SQL.Close()
+		if err != nil {
+			log.Fatal("cannot close db connection pool")
+		}
+	}(dataBaseConnectionPool.SQL)
 
 	server := &http.Server{
 		Addr:    portNumber,
@@ -36,13 +44,13 @@ func main() {
 }
 
 // Скорее всего нужно будет переименовать
-func prepareAppDataBeforeRun() error {
+func prepareAppDataBeforeRun() (*driver.DataBaseConnectionPool, error) {
 	var err error
 
 	appConfig.TemplatesCache, err = templatesCache.Create()
 	if err != nil {
 		log.Fatal("[package main]:[func main] - cannot get app config")
-		return err
+		return nil, err
 	}
 	appConfig.IsDevelopmentMode = true
 
@@ -56,11 +64,17 @@ func prepareAppDataBeforeRun() error {
 	session.Cookie.Secure = !appConfig.IsDevelopmentMode // false -> http / true -> https
 	appConfig.Session = session
 
-	repository := handlers.CreateNewRepository(&appConfig)
+	// Connection to the database
+	dataBaseConnectionPool, err := driver.GetDataBaseConnectionPool("host=localhost port=5432 dbname=Motel user=arturkeil password=")
+	if err != nil {
+		log.Fatal("cannot get dataBaseConnectionPool")
+	}
 
-	handlers.AreAskingToGetTheRepository(repository)
+	repositoryFromHandlersPkg := handlers.CreateNewRepository(&appConfig, dataBaseConnectionPool)
+
+	handlers.AreAskingToGetTheRepository(repositoryFromHandlersPkg)
 	render.AsksToGetTheAppConfig(&appConfig)
 	helpers.AreAskingToGetAppConfig(&appConfig)
 
-	return nil
+	return dataBaseConnectionPool, nil
 }

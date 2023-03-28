@@ -10,6 +10,8 @@ import (
 	"github.com/AnonymFromInternet/Motel/internal/repository"
 	repository2 "github.com/AnonymFromInternet/Motel/internal/repository/dbRepo"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 type Repository struct {
@@ -126,6 +128,44 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "reservation.page.gohtml"
 	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	if err != nil {
+		helpers.LogServerError(writer, err)
+	}
+}
+
+func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
+	startDateString := request.Form.Get("start-date")
+	endDateString := request.Form.Get("end-date")
+
+	// format casting
+	layout := "2006-01-02"
+
+	startDate, err := time.Parse(layout, startDateString)
+	endDate, err := time.Parse(layout, endDateString)
+	if err != nil {
+		helpers.LogServerError(writer, err)
+	}
+
+	roomId, err := strconv.Atoi(request.Form.Get("room_id"))
+	if err != nil {
+		helpers.LogServerError(writer, err)
+	}
+
+	reservation := models.Reservation{
+		ID:          0,
+		FirstName:   request.Form.Get("first-name"),
+		LastName:    request.Form.Get("last-name"),
+		Email:       request.Form.Get("email"),
+		PhoneNumber: request.Form.Get("phone-number"),
+		StartDate:   startDate,
+		EndDate:     endDate,
+		RoomId:      roomId,
+		CreatedAt:   time.Time{},
+		UpdatedAt:   time.Time{},
+		Room:        models.Room{},
+	}
+
+	err = repository.DataBaseRepoInterface.InsertReservation(reservation)
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}

@@ -6,4 +6,6 @@
 #### Gives users a possibility to choose a date and a room
 ##### Uses [chi-router](https://github.com/go-chi/chi)
 ##### Also [nosurf](https://github.com/justinas/nosurf)
+#### Also [jackc's pgx](github.com/jackc/pgx)
+#### No ORM
 #### Monolithic architecture

@@ -20,6 +20,7 @@ type Repository struct {
 }
 
 var Repo *Repository
+var TempDataReservationConfirmPage = make(map[string]interface{})
 
 func GetMainRepository(appConfig *app.Config, dbConnPool *driver.DataBaseConnectionPool) *Repository {
 	return &Repository{
@@ -167,8 +168,7 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 		helpers.LogServerError(writer, err)
 	}
 
-	basicData := make(map[string]interface{})
-	basicData["reservation"] = reservation
+	TempDataReservationConfirmPage["reservation"] = reservation
 
 	// Добавить переброс на другую страницу и положить туда мэп в темплейт дата
 	// Как сохранять данные в переменную в темплейте
@@ -177,7 +177,9 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 
 func (repository *Repository) GetHandlerReservationConfirmPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "reservationConfirm.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	err := render.Template(writer, request, fileName, &models.TemplatesData{
+		BasicData: TempDataReservationConfirmPage,
+	})
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}

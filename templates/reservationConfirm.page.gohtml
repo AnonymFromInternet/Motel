@@ -4,6 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
+                {{$data := index .BasicData.reservation}}
                 <form>
                     <label>
                         <input type="hidden" value="{{index .CSRFToken}}" name="csrf_token"/>
@@ -13,28 +14,28 @@
                         <legend class="text-success mt-3">See you soon in our Motel</legend>
                         <p class="text-success">Your order data</p>
                         <div class="mb-3">
-                            <label for="disabledTextInput" class="form-label">Email address</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Email address">
+                            <label for="email" class="form-label">Email address</label>
+                            <input value="{{$data.Email}}" type="text" id="email" class="form-control" placeholder="Email address">
                         </div>
 
                         <div class="mb-3">
-                            <label for="disabledTextInput" class="form-label">First Name</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="First Name">
+                            <label for="first-name" class="form-label">First Name</label>
+                            <input value="{{$data.FirstName}}" type="text" id="first-name" class="form-control" placeholder="First Name">
                         </div>
 
                         <div class="mb-3">
-                            <label for="disabledTextInput" class="form-label">Last Name</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Last Name">
+                            <label for="last-name" class="form-label">Last Name</label>
+                            <input value="{{$data.LastName}}" type="text" id="last-name" class="form-control" placeholder="Last Name">
                         </div>
 
                         <div class="mb-3">
-                            <label for="disabledTextInput" class="form-label">Room</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Room">
+                            <label for="room" class="form-label">Room</label>
+                            <input value="Room" type="text" id="room" class="form-control" placeholder="Room">
                         </div>
 
                         <div class="mb-3">
-                            <label for="disabledTextInput" class="form-label">From to</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="From start date to end date">
+                            <label for="from-to" class="form-label">From to</label>
+                            <input value="From {{$data.StartDate}} to {{$data.EndDate}}" type="text" id="from-to" class="form-control" placeholder="From start date to end date">
                         </div>
                         <div class="mb-3"></div>
                     </fieldset>

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
@@ -138,24 +137,22 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 	startDateString := request.Form.Get("start-date")
 	endDateString := request.Form.Get("end-date")
 
-	fmt.Println()
-
-	// format casting
-	layout := "2006-01-02"
+	// casting format
+	layout := "2006-01-02" // В таком виде почему то приходит из формы, хотя на сайте данные идут в обратном порядке
 
 	startDate, err := time.Parse(layout, startDateString)
 	endDate, err := time.Parse(layout, endDateString)
+
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
 
-	roomId, err := strconv.Atoi(request.Form.Get("room_id"))
+	roomId, err := strconv.Atoi(request.Form.Get("room-id"))
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
 
 	reservation := models.Reservation{
-		ID:          0,
 		FirstName:   request.Form.Get("first-name"),
 		LastName:    request.Form.Get("last-name"),
 		Email:       request.Form.Get("email"),
@@ -163,9 +160,6 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 		StartDate:   startDate,
 		EndDate:     endDate,
 		RoomId:      roomId,
-		CreatedAt:   time.Time{},
-		UpdatedAt:   time.Time{},
-		Room:        models.Room{},
 	}
 
 	err = repository.DataBaseRepoInterface.InsertReservation(reservation)
@@ -173,7 +167,12 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 		helpers.LogServerError(writer, err)
 	}
 
-	fmt.Println("PostHandlerReservationPage")
+	basicData := make(map[string]interface{})
+	basicData["reservation"] = reservation
+
+	// Добавить переброс на другую страницу и положить туда мэп в темплейт дата
+	// Как сохранять данные в переменную в темплейте
+	http.Redirect(writer, request, "/reservation-confirm", http.StatusSeeOther)
 }
 
 func (repository *Repository) GetHandlerReservationConfirmPage(writer http.ResponseWriter, request *http.Request) {

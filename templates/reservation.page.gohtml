@@ -6,7 +6,7 @@
             <div class="col">
                 <form action="/reservation" method="post" class="mt-3">
                     <label>
-                        <input type="text" value="{{index .CSRFToken}}" name="csrf_token"/>
+                        <input type="hidden" value="{{index .CSRFToken}}" name="csrf_token"/>
                     </label>
 
                     <h1>Make reservation</h1>
@@ -20,12 +20,24 @@
                         <input class="form-control" name="last-name" id="last-name" type="text" required />
                         <br>
 
+                        <label for="email">Please enter your email</label>
+                        <input class="form-control" name="email" id="email" type="email" required />
+                        <br>
+
                         <label for="phone-number">Please enter your phone number</label>
                         <input class="form-control" name="phone-number" id="phone-number" type="number" required />
                         <br>
 
-                        <label for="email">Please enter your email</label>
-                        <input class="form-control" name="email" id="email" type="email" required />
+                        <label for="start-date">Please enter start date</label>
+                        <input class="form-control" name="start-date" id="start-date" type="date" required />
+                        <br>
+
+                        <label for="end-date">Please enter end date</label>
+                        <input class="form-control" name="end-date" id="end-date" type="date" required />
+                        <br>
+
+                        <label for="room-id">Please enter room id</label>
+                        <input class="form-control" name="room-id" id="room-id" type="number" required />
                         <br>
 
                         <button type="submit" class="btn btn-primary">Make reservation</button>

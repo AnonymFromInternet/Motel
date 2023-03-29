@@ -5,32 +5,36 @@
         <div class="row">
             <div class="col">
                 <form>
+                    <label>
+                        <input type="hidden" value="{{index .CSRFToken}}" name="csrf_token"/>
+                    </label>
+
                     <fieldset disabled>
                         <legend class="text-success mt-3">See you soon in our Motel</legend>
                         <p class="text-success">Your order data</p>
                         <div class="mb-3">
                             <label for="disabledTextInput" class="form-label">Email address</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Email address">
                         </div>
 
                         <div class="mb-3">
                             <label for="disabledTextInput" class="form-label">First Name</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                            <input type="text" id="disabledTextInput" class="form-control" placeholder="First Name">
                         </div>
 
                         <div class="mb-3">
                             <label for="disabledTextInput" class="form-label">Last Name</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Last Name">
                         </div>
 
                         <div class="mb-3">
                             <label for="disabledTextInput" class="form-label">Room</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Room">
                         </div>
 
                         <div class="mb-3">
                             <label for="disabledTextInput" class="form-label">From to</label>
-                            <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                            <input type="text" id="disabledTextInput" class="form-control" placeholder="From start date to end date">
                         </div>
                         <div class="mb-3"></div>
                     </fieldset>

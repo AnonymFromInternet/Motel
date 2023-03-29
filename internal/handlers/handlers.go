@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
 	"github.com/AnonymFromInternet/Motel/internal/models"
 	"github.com/AnonymFromInternet/Motel/internal/render"
 	"github.com/AnonymFromInternet/Motel/internal/repository"
-	repository2 "github.com/AnonymFromInternet/Motel/internal/repository/dbRepo"
+	repository2 "github.com/AnonymFromInternet/Motel/internal/repository/postgresDbRepo"
 	"net/http"
 	"strconv"
 	"time"
@@ -137,6 +138,8 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 	startDateString := request.Form.Get("start-date")
 	endDateString := request.Form.Get("end-date")
 
+	fmt.Println()
+
 	// format casting
 	layout := "2006-01-02"
 
@@ -169,6 +172,8 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
+
+	fmt.Println("PostHandlerReservationPage")
 }
 
 func (repository *Repository) GetHandlerReservationConfirmPage(writer http.ResponseWriter, request *http.Request) {

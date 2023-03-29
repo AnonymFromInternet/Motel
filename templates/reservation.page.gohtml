@@ -5,6 +5,10 @@
         <div class="row">
             <div class="col">
                 <form action="/reservation" method="post" class="mt-3">
+                    <label>
+                        <input type="text" value="{{index .CSRFToken}}" name="csrf_token"/>
+                    </label>
+
                     <h1>Make reservation</h1>
 
                     <div class="form-group">

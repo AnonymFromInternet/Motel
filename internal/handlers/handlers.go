@@ -169,6 +169,8 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 	}
 
 	TempDataReservationConfirmPage["reservation"] = reservation
+	TempDataReservationConfirmPage["sd"] = reservation.StartDate.Format("2006-01-02")
+	TempDataReservationConfirmPage["ed"] = reservation.EndDate.Format("2006-01-02")
 
 	// Добавить переброс на другую страницу и положить туда мэп в темплейт дата
 	// Как сохранять данные в переменную в темплейте

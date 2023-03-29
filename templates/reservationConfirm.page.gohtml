@@ -5,6 +5,8 @@
         <div class="row">
             <div class="col">
                 {{$data := index .BasicData.reservation}}
+                {{$startDate := index .BasicData.sd}}
+                {{$endDate := index .BasicData.ed}}
                 <form>
                     <label>
                         <input type="hidden" value="{{index .CSRFToken}}" name="csrf_token"/>
@@ -35,7 +37,7 @@
 
                         <div class="mb-3">
                             <label for="from-to" class="form-label">From to</label>
-                            <input value="From {{$data.StartDate}} to {{$data.EndDate}}" type="text" id="from-to" class="form-control" placeholder="From start date to end date">
+                            <input value="From {{$startDate}} to {{$endDate}}" type="text" id="from-to" class="form-control" placeholder="From start date to end date">
                         </div>
                         <div class="mb-3"></div>
                     </fieldset>

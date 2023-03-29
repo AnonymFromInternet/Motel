@@ -9,7 +9,7 @@ import (
 
 var appConfig *app.Config
 
-func AreAskingToGetAppConfig(appConfigParam *app.Config) {
+func AreAskingToGet(appConfigParam *app.Config) {
 	appConfig = appConfigParam
 }
 

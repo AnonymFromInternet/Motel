@@ -9,7 +9,7 @@ import (
 	"github.com/AnonymFromInternet/Motel/internal/models"
 	"github.com/AnonymFromInternet/Motel/internal/render"
 	"github.com/AnonymFromInternet/Motel/internal/repository"
-	repository2 "github.com/AnonymFromInternet/Motel/internal/repository/postgresDbRepo"
+	repository2 "github.com/AnonymFromInternet/Motel/internal/repository/dbRepo"
 	"net/http"
 	"strconv"
 	"time"
@@ -22,14 +22,14 @@ type Repository struct {
 
 var Repo *Repository
 
-func CreateNewRepository(appConfig *app.Config, dbConnPool *driver.DataBaseConnectionPool) *Repository {
+func GetMainRepository(appConfig *app.Config, dbConnPool *driver.DataBaseConnectionPool) *Repository {
 	return &Repository{
 		AppConfig:             appConfig,
-		DataBaseRepoInterface: repository2.GetPostgresDBRepo(appConfig, dbConnPool.SQL),
+		DataBaseRepoInterface: repository2.GetPostgresDbRepo(appConfig, dbConnPool.SQL),
 	}
 }
 
-func AreAskingToGetTheRepository(repository *Repository) {
+func SetPkgRepoVariable(repository *Repository) {
 	Repo = repository
 }
 

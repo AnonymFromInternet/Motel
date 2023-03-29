@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (postgresDBRepo *postgresDBRepo) InsertReservation(reservation models.Reservation) error {
+func (postgresDbRepo *PostgresDbRepo) InsertReservation(reservation models.Reservation) error {
 	const query = `insert into reservations (
 			                          first_name,
 			                          last_name,
@@ -23,7 +23,7 @@ func (postgresDBRepo *postgresDBRepo) InsertReservation(reservation models.Reser
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	_, err := postgresDBRepo.SqlDB.ExecContext(
+	_, err := postgresDbRepo.SqlDB.ExecContext(
 		ctx,
 		query,
 		reservation.FirstName,

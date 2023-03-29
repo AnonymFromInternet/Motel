@@ -60,6 +60,6 @@ func Template(writer http.ResponseWriter, request *http.Request, templateFirstNa
 	return nil
 }
 
-func AsksToGetTheAppConfig(config *app.Config) {
+func AsksToGet(config *app.Config) {
 	appConfiguration = config
 }

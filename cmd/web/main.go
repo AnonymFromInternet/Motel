@@ -78,11 +78,11 @@ func prepareAppDataBeforeRun() (*driver.DataBaseConnectionPool, error) {
 		log.Fatal("[main]:[prepareAppDataBeforeRun] - cannot get dataBaseConnectionPool")
 	}
 
-	repositoryFromHandlersPkg := handlers.CreateNewRepository(&appConfig, dataBaseConnectionPool)
+	mainRepository := handlers.GetMainRepository(&appConfig, dataBaseConnectionPool)
 
-	handlers.AreAskingToGetTheRepository(repositoryFromHandlersPkg)
-	render.AsksToGetTheAppConfig(&appConfig)
-	helpers.AreAskingToGetAppConfig(&appConfig)
+	handlers.SetPkgRepoVariable(mainRepository)
+	render.AsksToGet(&appConfig)
+	helpers.AreAskingToGet(&appConfig)
 
 	return dataBaseConnectionPool, nil
 }

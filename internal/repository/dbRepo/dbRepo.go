@@ -6,13 +6,13 @@ import (
 	"github.com/AnonymFromInternet/Motel/internal/repository"
 )
 
-type postgresDBRepo struct {
+type PostgresDbRepo struct {
 	AppConfig *app.Config
 	SqlDB     *sql.DB
 }
 
-func GetPostgresDBRepo(appConfig *app.Config, sqlDB *sql.DB) repository.DataBaseRepoInterface {
-	return &postgresDBRepo{
+func GetPostgresDbRepo(appConfig *app.Config, sqlDB *sql.DB) repository.DataBaseRepoInterface {
+	return &PostgresDbRepo{
 		AppConfig: appConfig,
 		SqlDB:     sqlDB,
 	}

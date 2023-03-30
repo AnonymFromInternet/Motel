@@ -27,3 +27,8 @@ func LogServerError(writer http.ResponseWriter, err error) {
 func LogInfo(info string) {
 	appConfig.InfoLogger.Println(info)
 }
+
+const (
+	RestrictionTypeReservation int = 1
+	RestrictionTypeService     int = 2
+)

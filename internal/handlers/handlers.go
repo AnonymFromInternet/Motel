@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
@@ -20,7 +21,6 @@ type Repository struct {
 }
 
 var Repo *Repository
-var TempDataReservationConfirmPage = make(map[string]interface{})
 
 func GetMainRepository(appConfig *app.Config, dbConnPool *driver.DataBaseConnectionPool) *Repository {
 	return &Repository{
@@ -134,6 +134,8 @@ func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWrit
 	}
 }
 
+var TempDataReservationConfirmPage = make(map[string]interface{})
+
 func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
 	startDateString := request.Form.Get("start-date")
 	endDateString := request.Form.Get("end-date")
@@ -143,14 +145,15 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 
 	startDate, err := time.Parse(layout, startDateString)
 	endDate, err := time.Parse(layout, endDateString)
-
 	if err != nil {
 		helpers.LogServerError(writer, err)
+		return
 	}
 
 	roomId, err := strconv.Atoi(request.Form.Get("room-id"))
 	if err != nil {
 		helpers.LogServerError(writer, err)
+		return
 	}
 
 	reservation := models.Reservation{
@@ -163,17 +166,34 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 		RoomId:      roomId,
 	}
 
-	err = repository.DataBaseRepoInterface.InsertReservation(reservation)
+	reservationId, err := repository.DataBaseRepoInterface.InsertReservationGetReservationId(reservation)
+	fmt.Println("reservationId :", reservationId)
+
 	if err != nil {
 		helpers.LogServerError(writer, err)
+		return
+	}
+
+	roomRestriction := models.RoomRestriction{
+		StartDate:     startDate,
+		EndDate:       endDate,
+		RoomId:        roomId,
+		ReservationId: reservationId,
+		RestrictionId: helpers.RestrictionTypeReservation,
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
+	}
+
+	err = repository.DataBaseRepoInterface.InsertRoomRestriction(roomRestriction)
+	if err != nil {
+		helpers.LogServerError(writer, err)
+		return
 	}
 
 	TempDataReservationConfirmPage["reservation"] = reservation
 	TempDataReservationConfirmPage["sd"] = reservation.StartDate.Format("2006-01-02")
 	TempDataReservationConfirmPage["ed"] = reservation.EndDate.Format("2006-01-02")
 
-	// Добавить переброс на другую страницу и положить туда мэп в темплейт дата
-	// Как сохранять данные в переменную в темплейте
 	http.Redirect(writer, request, "/reservation-confirm", http.StatusSeeOther)
 }
 

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/models"
 	"time"
 )
@@ -91,13 +92,18 @@ func (postgresDbRepo *PostgresDbRepo) IsRoomAvailable(startDate, endDate time.Ti
 	const query = `
 				select count(id)
 				from room_restrictions
-				where $1 > end_date or $2 < start_date
+				where $1 >= start_date and $2 <= end_date
 	`
+	// Переработать запрос так как сейчас не работает.
+
 	row := postgresDbRepo.SqlDB.QueryRowContext(ctx, query, startDate, endDate)
 	err = row.Scan(&rowAmount)
 	if err != nil {
+		fmt.Println("IF ERROR :", err)
 		return false, err
 	}
+
+	fmt.Println("row :", rowAmount)
 
 	return !(rowAmount > 0), err
 }

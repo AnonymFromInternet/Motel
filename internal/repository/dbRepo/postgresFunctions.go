@@ -80,3 +80,24 @@ func (postgresDbRepo *PostgresDbRepo) InsertRoomRestriction(roomRestriction mode
 
 	return nil
 }
+
+func (postgresDbRepo *PostgresDbRepo) IsRoomAvailable(startDate, endDate time.Time) (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var err error
+	var rowAmount int
+
+	const query = `
+				select count(id)
+				from room_restrictions
+				where $1 > end_date or $2 < start_date
+	`
+	row := postgresDbRepo.SqlDB.QueryRowContext(ctx, query, startDate, endDate)
+	err = row.Scan(&rowAmount)
+	if err != nil {
+		return false, err
+	}
+
+	return !(rowAmount > 0), err
+}

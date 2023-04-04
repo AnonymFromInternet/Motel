@@ -156,6 +156,14 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 		return
 	}
 
+	isRoomAvailable, err := repository.DataBaseRepoInterface.IsRoomAvailable(startDate, endDate)
+	fmt.Println("isRoomAvailable :", isRoomAvailable)
+
+	if !isRoomAvailable {
+		// message for user about trying another dates
+		//return
+	}
+
 	reservation := models.Reservation{
 		FirstName:   request.Form.Get("first-name"),
 		LastName:    request.Form.Get("last-name"),

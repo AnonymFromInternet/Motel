@@ -10,6 +10,7 @@ import (
 
 func getHandler(appConfig *app.Config) http.Handler {
 	multiplexer := chi.NewRouter()
+
 	multiplexer.Use(middleware.Recoverer)
 	multiplexer.Use(SessionLoadMiddleware)
 	multiplexer.Use(CSRFMiddleware)

@@ -94,8 +94,6 @@ func (postgresDbRepo *PostgresDbRepo) IsRoomAvailable(startDate, endDate time.Ti
 				from room_restrictions
 				where $1 >= start_date and $2 <= end_date
 	`
-	// Переработать запрос так как сейчас не работает.
-
 	row := postgresDbRepo.SqlDB.QueryRowContext(ctx, query, startDate, endDate)
 	err = row.Scan(&rowAmount)
 	if err != nil {

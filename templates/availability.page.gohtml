@@ -25,7 +25,7 @@
                             <input type="date" required class="form-control" id="end-date" name="end-date">
                             <div id="end" class="form-text">Please enter an end date</div>
                         </div>
-                        <button onclick="clickListener()" id="form-button" type="button" class="btn btn-primary">Check availability</button>
+                        <button onclick="onClick()" id="form-button" type="button" class="btn btn-primary">Check availability</button>
 
                     <div class="modal fade" tabindex="-1" id="go-to-reservation-modal">
                         <div class="modal-dialog">
@@ -72,6 +72,23 @@
         </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" id="alert-modal-incorrect-dates">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">Maybe start date is later than end date or vice versa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please choose start and end dates correctly</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary text-center" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" tabindex="-1" id="no-free-room-modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -90,7 +107,7 @@
     </div>
 
     <script>
-        const clickListener = () => {
+        const onClick = () => {
             const startDate = document.getElementById("start-date").value
             const endDate = document.getElementById("end-date").value
             const form = document.getElementById("reservation-form")
@@ -98,28 +115,33 @@
 
             formData.append("csrf_token", "{{ .CSRFToken }}")
 
-
-            if (startDate && endDate) {
-                fetch("/availability-json", {
-                    method: "POST",
-                    body: formData,
-                })
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(data => {
-                        if (data.isAvailable) {
-                            showModal("go-to-reservation-modal")
-                        } else {
-                            showModal("no-free-room-modal")
-                        }
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    })
-            } else {
+            if (!(startDate && endDate)) {
                 showModal("alert-modal")
+                return
             }
+
+            if (endDate < startDate) {
+                showModal("alert-modal-incorrect-dates")
+                return
+            }
+
+            fetch("/availability-json", {
+                method: "POST",
+                body: formData,
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.isAvailable) {
+                        showModal("go-to-reservation-modal")
+                    } else {
+                        showModal("no-free-room-modal")
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                })
         }
 
         const showModal = (id) => {

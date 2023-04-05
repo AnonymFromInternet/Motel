@@ -167,16 +167,20 @@ func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWrit
 	}
 }
 
+// TempDataReservationConfirmPage TODO Поменять функционал на передачу этих данных в Session
 var TempDataReservationConfirmPage = make(map[string]interface{})
 
 func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
+	// Это доставать можно уже из session TODO
 	startDate, endDate, err := helpers.GetDatesInTimeFormat(request)
 	if err != nil {
 		helpers.LogServerError(writer, err)
 		return
 	}
 
-	roomId, err := strconv.Atoi(request.Form.Get("room-id"))
+	// Для этого можно написать запрос к базе данных, где будет спрашиваться айди в зависимости от имени
+	// TODO сейчас в roomId лежит имя. Или просто в хендлерах создать массив, который будет выдавать айдишники комнат по именам
+	roomId, err := strconv.Atoi(request.Form.Get("chosen-room"))
 	if err != nil {
 		helpers.LogServerError(writer, err)
 		return

@@ -37,7 +37,7 @@
                             <input disabled class="form-control" name="end-date" id="end-date" type="text"  value="{{$dates.EndDate.Format "2006-01-02"}}"/>
                             <br>
 
-                            <label for="room-variants">Please enter an available room from list here</label>
+                            <label for="room-variants">Please enter an available room from dropdown here</label>
                                 <select class="form-control mb-3" name="room-variants" id="room-variants">
                                     {{ range $room := index .BasicData "rooms" }}
                                         <option name="chosen-room" value="{{$room.Name}}">{{$room.Name}}</option>

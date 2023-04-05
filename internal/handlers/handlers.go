@@ -156,13 +156,11 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 		return
 	}
 
+	// TODO Эта функция вообще должна вызываться в хендлере для страницы про availability и вся проверка должна
+	// TODO проводится совместно с JS и если что сообщать модалкой о проблеме. А данный хендлер этим заниматься не должен
+	// TODO Он должен лишь брать данные по датам и класть их в базу данных
 	isRoomAvailable, err := repository.DataBaseRepoInterface.IsRoomAvailable(startDate, endDate)
 	fmt.Println("isRoomAvailable :", isRoomAvailable)
-
-	// Также добавить проверку на то, является ли стартовая дата меньше конечной
-
-	// На стороне JS делать проверку. Она уже там делается на шаге Search for availability. Еще на той странице
-	// надо просто сохранять даты где то и потом передавать сюда и уже тут не делать никакую проверку
 
 	if !isRoomAvailable {
 		// message for user about trying another dates

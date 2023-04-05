@@ -47,11 +47,12 @@ func main() {
 
 // Скорее всего нужно будет переименовать
 func prepareAppDataBeforeRun() (*driver.DataBaseConnectionPool, error) {
-	// Вроде это не обязательно
+	// Register in global encoding decoding for working with Session
 	gob.Register(models.User{})
 	gob.Register(models.Reservation{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
+	gob.Register([]models.Room{})
 
 	var err error
 

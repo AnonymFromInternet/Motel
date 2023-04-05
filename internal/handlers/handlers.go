@@ -131,6 +131,8 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 		message = "Available"
 	}
 
+	repository.AppConfig.Session.Put(request.Context(), "rooms", rooms)
+
 	response := jsonResponse{IsAvailable: isAvailable, Message: message, Rooms: rooms}
 
 	responseInJsonFormat, err := json.MarshalIndent(response, "", " ")
@@ -149,7 +151,12 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 
 func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "reservation.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	basicData := make(map[string]interface{})
+	basicData["rooms"] = repository.AppConfig.Session.Get(request.Context(), "rooms")
+
+	err := render.Template(writer, request, fileName, &models.TemplatesData{
+		BasicData: basicData,
+	})
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}

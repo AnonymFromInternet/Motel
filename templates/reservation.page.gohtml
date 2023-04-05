@@ -1,53 +1,58 @@
 {{template "base" .}}
 
-<div>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <form action="/reservation" method="post" class="mt-3">
-                    <label>
-                        <input type="hidden" value="{{index .CSRFToken}}" name="csrf_token"/>
-                    </label>
+{{ define "content" }}
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <form action="/reservation" method="post" class="mt-3">
+                        <label>
+                            <input type="hidden" value="{{index .CSRFToken}}" name="csrf_token"/>
+                        </label>
 
-                    <h1>Make reservation</h1>
+                        <h1>Make reservation</h1>
 
-                    <div class="form-group">
-                        <label for="first-name">Please enter your first name</label>
-                        <input class="form-control" name="first-name" id="first-name" type="text" required />
-                        <br>
+                        <div class="form-group">
+                            <label for="first-name">Please enter your first name</label>
+                            <input class="form-control" name="first-name" id="first-name" type="text" required />
+                            <br>
 
-                        <label for="last-name">Please enter your last name</label>
-                        <input class="form-control" name="last-name" id="last-name" type="text" required />
-                        <br>
+                            <label for="last-name">Please enter your last name</label>
+                            <input class="form-control" name="last-name" id="last-name" type="text" required />
+                            <br>
 
-                        <label for="email">Please enter your email</label>
-                        <input class="form-control" name="email" id="email" type="email" required />
-                        <br>
+                            <label for="email">Please enter your email</label>
+                            <input class="form-control" name="email" id="email" type="email" required />
+                            <br>
 
-                        <label for="phone-number">Please enter your phone number</label>
-                        <input class="form-control" name="phone-number" id="phone-number" type="number" required />
-                        <br>
+                            <label for="phone-number">Please enter your phone number</label>
+                            <input class="form-control" name="phone-number" id="phone-number" type="number" required />
+                            <br>
 
-                        <label for="start-date">Please enter start date</label>
-                        <input class="form-control" name="start-date" id="start-date" type="date" required />
-                        <br>
+                            <label for="start-date">Please enter start date</label>
+                            <input disabled class="form-control" name="start-date" id="start-date" type="date" value="" />
+                            <br>
 
-                        <label for="end-date">Please enter end date</label>
-                        <input class="form-control" name="end-date" id="end-date" type="date" required />
-                        <br>
+                            <label for="end-date">Please enter end date</label>
+                            <input disabled class="form-control" name="end-date" id="end-date" type="date" value="" />
+                            <br>
 
-                        <label for="room-id">Please enter room id</label>
-                        <input class="form-control" name="room-id" id="room-id" type="number" required />
-                        <br>
+                            <label for="room-variants">Please enter available room from list here</label>
+                                <select class="form-control mb-3" name="room-variants" id="room-variants">
+                                    {{ range $room := index .BasicData "rooms" }}
+                                        <option value="{{$room.Name}}">{{$room.Name}}</option>
+                                    {{ end }}
+                                </select>
 
-                        <button type="submit" class="btn btn-primary">Make reservation</button>
-                    </div>
-                </form>
+                            <button type="submit" class="btn btn-primary">Make reservation</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col"></div>
+
+                <div class="col"></div>
             </div>
-
-            <div class="col"></div>
-
-            <div class="col"></div>
         </div>
     </div>
-</div>
+{{ end }}

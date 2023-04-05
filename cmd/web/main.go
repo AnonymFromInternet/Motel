@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/gob"
+	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/handlers"
@@ -43,6 +44,8 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot start server")
 	}
+
+	fmt.Println("Server successfully started")
 }
 
 // Скорее всего нужно будет переименовать

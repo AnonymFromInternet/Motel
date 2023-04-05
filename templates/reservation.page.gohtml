@@ -9,7 +9,6 @@
                         <label>
                             <input type="hidden" value="{{index .CSRFToken}}" name="csrf_token"/>
                         </label>
-
                         <h1>Make reservation</h1>
 
                         <div class="form-group">
@@ -29,18 +28,19 @@
                             <input class="form-control" name="phone-number" id="phone-number" type="number" required />
                             <br>
 
-                            <label for="start-date">Please enter start date</label>
-                            <input disabled class="form-control" name="start-date" id="start-date" type="date" value="" />
+                            {{$dates := index .BasicData "dates"}}
+                            <label for="start-date">Chosen start date</label>
+                            <input disabled class="form-control" name="start-date" id="start-date" type="text" value="{{$dates.StartDate.Format "2006-01-02"}}"/>
                             <br>
 
-                            <label for="end-date">Please enter end date</label>
-                            <input disabled class="form-control" name="end-date" id="end-date" type="date" value="" />
+                            <label for="end-date">Chosen end date</label>
+                            <input disabled class="form-control" name="end-date" id="end-date" type="text"  value="{{$dates.EndDate.Format "2006-01-02"}}"/>
                             <br>
 
-                            <label for="room-variants">Please enter available room from list here</label>
+                            <label for="room-variants">Please enter an available room from list here</label>
                                 <select class="form-control mb-3" name="room-variants" id="room-variants">
                                     {{ range $room := index .BasicData "rooms" }}
-                                        <option value="{{$room.Name}}">{{$room.Name}}</option>
+                                        <option name="chosen-room" value="{{$room.Name}}">{{$room.Name}}</option>
                                     {{ end }}
                                 </select>
 
@@ -48,7 +48,6 @@
                         </div>
                     </form>
                 </div>
-
                 <div class="col"></div>
 
                 <div class="col"></div>

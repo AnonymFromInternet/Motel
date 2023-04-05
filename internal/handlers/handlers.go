@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
@@ -114,6 +113,7 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 	var err error
 	var isAvailable bool
 	var message string
+	var dates models.Reservation
 
 	startDate, endDate, err := helpers.GetDatesInTimeFormat(request)
 	if err != nil {
@@ -130,8 +130,12 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 		isAvailable = true
 		message = "Available"
 	}
-
 	repository.AppConfig.Session.Put(request.Context(), "rooms", rooms)
+
+	dates.StartDate = startDate
+	dates.EndDate = endDate
+
+	repository.AppConfig.Session.Put(request.Context(), "dates", dates)
 
 	response := jsonResponse{IsAvailable: isAvailable, Message: message, Rooms: rooms}
 
@@ -153,6 +157,7 @@ func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWrit
 	const fileName = "reservation.page.gohtml"
 	basicData := make(map[string]interface{})
 	basicData["rooms"] = repository.AppConfig.Session.Get(request.Context(), "rooms")
+	basicData["dates"] = repository.AppConfig.Session.Get(request.Context(), "dates")
 
 	err := render.Template(writer, request, fileName, &models.TemplatesData{
 		BasicData: basicData,
@@ -181,11 +186,10 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 	// TODO проводится совместно с JS и если что сообщать модалкой о проблеме. А данный хендлер этим заниматься не должен
 	// TODO Он должен лишь брать данные по датам и класть их в базу данных
 	isRoomAvailable, err := repository.DataBaseRepoInterface.IsRoomAvailable(roomId, startDate, endDate)
-	fmt.Println("isRoomAvailable :", isRoomAvailable)
 
 	if !isRoomAvailable {
 		// message for user about trying another dates
-		//return
+		// return
 	}
 
 	reservation := models.Reservation{
@@ -199,7 +203,6 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 	}
 
 	reservationId, err := repository.DataBaseRepoInterface.InsertReservationGetReservationId(reservation)
-	fmt.Println("reservationId :", reservationId)
 
 	if err != nil {
 		helpers.LogServerError(writer, err)

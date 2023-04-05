@@ -8,5 +8,6 @@ import (
 type DataBaseRepoInterface interface {
 	InsertReservationGetReservationId(reservation models.Reservation) (int, error)
 	InsertRoomRestriction(roomRestriction models.RoomRestriction) error
-	IsRoomAvailable(startDate, endDate time.Time, roomId int) (bool, error)
+	IsRoomAvailable(roomId int, startDate time.Time, endDate time.Time) (bool, error)
+	GetAllAvailableRooms(startDate, endDate time.Time) ([]models.Room, error)
 }

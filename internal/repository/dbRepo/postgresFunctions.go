@@ -82,7 +82,7 @@ func (postgresDbRepo *PostgresDbRepo) InsertRoomRestriction(roomRestriction mode
 	return nil
 }
 
-func (postgresDbRepo *PostgresDbRepo) IsRoomAvailable(roomId int, startDate, endDate time.Time) (bool, error) {
+func (postgresDbRepo *PostgresDbRepo) IsRoomAvailable(roomId int, startDate time.Time, endDate time.Time) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -106,4 +106,46 @@ func (postgresDbRepo *PostgresDbRepo) IsRoomAvailable(roomId int, startDate, end
 	fmt.Println("row :", rowAmount)
 
 	return !(rowAmount > 0), err
+}
+
+func (postgresDbRepo *PostgresDbRepo) GetAllAvailableRooms(startDate, endDate time.Time) ([]models.Room, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var rooms []models.Room
+
+	const query = `
+			select
+				r.id, r.room_name
+			from
+			    rooms r
+			where r.id not in (
+								select
+								    room_id from room_restrictions rr
+								where
+								    $1 >= start_date and $2 <= end_date
+			            		)
+	`
+	rows, err := postgresDbRepo.SqlDB.QueryContext(ctx, query, startDate, endDate)
+	if err != nil {
+		return rooms, err
+	}
+
+	for rows.Next() {
+		var room models.Room
+
+		err = rows.Scan(&room.ID, &room.Name)
+		if err != nil {
+			return rooms, err
+		}
+
+		rooms = append(rooms, room)
+	}
+
+	// Рекомендуется проводить еще одну проверку на содержание ошибок в самих rows:
+	if err = rows.Err(); err != nil {
+		return rooms, err
+	}
+
+	return rooms, nil
 }

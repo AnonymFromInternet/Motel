@@ -31,11 +31,14 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Room is free for the chosen dates</h5>
+                                    <h5 class="modal-title">These rooms are free for the chosen dates</h5>
+                                    <br>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body">
-                                    <p>Now you can go to the reservation page</p>
+                                <div class="modal-body" id="success-modal-body">
+
+
+                                    <p class="mt-3">Now you can go to the reservation page <span class="text-success">↓</span></p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -135,6 +138,14 @@
                 .then(data => {
                     if (data.isAvailable) {
                         showModal("go-to-reservation-modal")
+                        const modalBody = document.getElementById("success-modal-body")
+
+                        data.rooms.forEach((room) => {
+                            const roomElement = document.createElement("div")
+                            roomElement.innerHTML = `<div class="text-success">${room.Name}</div>`
+
+                            modalBody.insertBefore(roomElement, modalBody.firstChild)
+                        })
                     } else {
                         showModal("no-free-room-modal")
                     }

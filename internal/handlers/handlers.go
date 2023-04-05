@@ -85,6 +85,7 @@ func (repository *Repository) GetHandlerAvailabilityPage(writer http.ResponseWri
 	}
 }
 
+// PostHandlerAvailabilityPage TODO Данный хэндлер пока не используется и не факт что он вообще нужен будет
 func (repository *Repository) PostHandlerAvailabilityPage(writer http.ResponseWriter, request *http.Request) {
 	var basicData map[string]interface{}
 
@@ -104,13 +105,33 @@ func (repository *Repository) PostHandlerAvailabilityPage(writer http.ResponseWr
 }
 
 type jsonResponse struct {
-	IsAvailable bool   `json:"isAvailable"`
-	Message     string `json:"message"`
+	IsAvailable bool          `json:"isAvailable"`
+	Message     string        `json:"message"`
+	Rooms       []models.Room `json:"rooms"`
 }
 
 func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.ResponseWriter, request *http.Request) {
 	var err error
-	response := jsonResponse{IsAvailable: true, Message: "Available"}
+	var isAvailable bool
+	var message string
+
+	startDate, endDate, err := helpers.GetDatesInTimeFormat(request)
+	if err != nil {
+		helpers.LogServerError(writer, err)
+		return
+	}
+
+	rooms, err := repository.DataBaseRepoInterface.GetAllAvailableRooms(startDate, endDate)
+	if err != nil {
+		helpers.LogServerError(writer, err)
+		return
+	}
+	if len(rooms) > 0 {
+		isAvailable = true
+		message = "Available"
+	}
+
+	response := jsonResponse{IsAvailable: isAvailable, Message: message, Rooms: rooms}
 
 	responseInJsonFormat, err := json.MarshalIndent(response, "", " ")
 	if err != nil {
@@ -137,14 +158,7 @@ func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWrit
 var TempDataReservationConfirmPage = make(map[string]interface{})
 
 func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
-	startDateString := request.Form.Get("start-date")
-	endDateString := request.Form.Get("end-date")
-
-	// casting format
-	layout := "2006-01-02" // В таком виде почему то приходит из формы, хотя на сайте данные идут в обратном порядке
-
-	startDate, err := time.Parse(layout, startDateString)
-	endDate, err := time.Parse(layout, endDateString)
+	startDate, endDate, err := helpers.GetDatesInTimeFormat(request)
 	if err != nil {
 		helpers.LogServerError(writer, err)
 		return

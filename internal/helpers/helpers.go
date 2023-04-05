@@ -5,6 +5,7 @@ import (
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 var appConfig *app.Config
@@ -32,3 +33,18 @@ const (
 	RestrictionTypeReservation int = 1
 	RestrictionTypeService     int = 2
 )
+
+func GetDatesInTimeFormat(request *http.Request) (time.Time, time.Time, error) {
+	startDateString := request.Form.Get("start-date")
+	endDateString := request.Form.Get("end-date")
+	// casting format
+	layout := "2006-01-02" // В таком виде почему то приходит из формы, хотя на сайте данные идут в обратном порядке
+
+	startDate, err := time.Parse(layout, startDateString)
+	endDate, err := time.Parse(layout, endDateString)
+	if err != nil {
+		return startDate, endDate, err
+	}
+
+	return startDate, endDate, nil
+}

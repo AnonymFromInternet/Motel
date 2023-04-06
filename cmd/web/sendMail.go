@@ -12,7 +12,7 @@ func listenForMail() {
 	go func() {
 		for {
 			message := <-appConfig.MailChan
-			// Will called only if message gets the value???
+			// Will called only if message gets the value (when data will be given to the appConfig.MailChan)
 			sendMessage(message)
 		}
 	}()

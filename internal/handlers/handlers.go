@@ -222,7 +222,7 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 
 	http.Redirect(writer, request, "/reservation-confirm", http.StatusSeeOther)
 
-	mailData := models.MailData{
+	mailDataForAdmin := models.MailData{
 		ClientName:    reservation.FirstName,
 		ClientSurname: reservation.LastName,
 		RoomName:      roomName,
@@ -234,11 +234,11 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 			reservation.FirstName,
 			reservation.LastName,
 			roomName,
-			dates.StartDate,
-			dates.EndDate,
+			dates.StartDate.Format("2006-01-02"),
+			dates.EndDate.Format("2006-01-02"),
 		),
 	}
-	repository.AppConfig.MailChan <- mailData
+	repository.AppConfig.MailChan <- mailDataForAdmin
 }
 
 func (repository *Repository) GetHandlerReservationConfirmPage(writer http.ResponseWriter, request *http.Request) {

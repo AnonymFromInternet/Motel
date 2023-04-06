@@ -40,6 +40,16 @@ func main() {
 	listenForMail()
 	fmt.Println("Mail listener successfully started")
 
+	// MAIL TEST
+	mailData := models.MailData{
+		From:    "test@test.com",
+		To:      "mailtestservice@com.com",
+		Subject: "Header",
+		Content: "<strong>Test message. Server started</strong>",
+	}
+	appConfig.MailChan <- mailData
+	// MAIL TEST
+
 	server := &http.Server{
 		Addr:    portNumber,
 		Handler: getHandler(&appConfig),

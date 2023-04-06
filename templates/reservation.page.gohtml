@@ -38,9 +38,9 @@
                             <br>
 
                             <label for="room-variants">Please enter an available room from dropdown here</label>
-                                <select class="form-control mb-3" name="room-variants" id="room-variants">
+                                <select name="chosen-room" class="form-control mb-3" name="room-variants" id="room-variants">
                                     {{ range $room := index .BasicData "rooms" }}
-                                        <option name="chosen-room" value="{{$room.Name}}">{{$room.Name}}</option>
+                                        <option value="{{$room.Name}}">{{$room.Name}}</option>
                                     {{ end }}
                                 </select>
 

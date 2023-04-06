@@ -182,6 +182,7 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 
 	roomName := request.Form.Get("chosen-room")
 	roomId, err := repository.DataBaseRepoInterface.GetRoomIdBy(roomName)
+	fmt.Println("room id is :", roomId)
 	if err != nil {
 		helpers.LogServerError(writer, err)
 		return

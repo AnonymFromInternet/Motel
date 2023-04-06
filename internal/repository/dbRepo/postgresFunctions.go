@@ -109,13 +109,17 @@ func (postgresDbRepo *PostgresDbRepo) GetAllAvailableRooms(startDate, endDate ti
 	defer cancel()
 
 	var rooms []models.Room
-	const query = `
-					select
-						room_id from room_restrictions rr
-					where
-						($1 <= rr.start_date and $2 <= rr.end_date)
-					or
-					    ($1 <= rr.end_date and $2 >= rr.end_date)
+	const query = ` select r.id, r.room_name
+     				from rooms r
+     				    where r.id not in
+					(select
+						room_id
+					 from room_restrictions rr
+						where 
+							($1 <= rr.start_date and $2 <= rr.end_date)
+						or
+							($1 <= rr.end_date and $2 >= rr.end_date)
+					)
 	`
 
 	rows, err := postgresDbRepo.SqlDB.QueryContext(ctx, query, startDate, endDate)

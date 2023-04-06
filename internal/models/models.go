@@ -66,8 +66,13 @@ type RoomRestriction struct {
 }
 
 type MailData struct {
-	From    string
-	To      string
-	Subject string
-	Content string
+	ClientName    string
+	ClientSurname string
+	RoomName      string
+	Arrival       string
+	Departure     string
+	From          string
+	To            string
+	Subject       string
+	Content       string
 }

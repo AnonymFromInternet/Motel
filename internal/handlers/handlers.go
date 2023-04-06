@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
@@ -220,6 +221,24 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 	TempDataReservationConfirmPage["ed"] = reservation.EndDate.Format("2006-01-02")
 
 	http.Redirect(writer, request, "/reservation-confirm", http.StatusSeeOther)
+
+	mailData := models.MailData{
+		ClientName:    reservation.FirstName,
+		ClientSurname: reservation.LastName,
+		RoomName:      roomName,
+		From:          reservation.Email,
+		To:            "newReservation@com.com",
+		Subject:       "New reservation",
+		Content: fmt.Sprintf(
+			"<p>New reservation was created from %s %s. Room is %s. Arrival: %s. Departure: %s </p>",
+			reservation.FirstName,
+			reservation.LastName,
+			roomName,
+			dates.StartDate,
+			dates.EndDate,
+		),
+	}
+	repository.AppConfig.MailChan <- mailData
 }
 
 func (repository *Repository) GetHandlerReservationConfirmPage(writer http.ResponseWriter, request *http.Request) {

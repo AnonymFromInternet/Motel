@@ -123,7 +123,7 @@
                 return
             }
 
-            if (endDate < startDate) {
+            if ((endDate < startDate) || startDate < Date.now()) {
                 showModal("alert-modal-incorrect-dates")
                 return
             }

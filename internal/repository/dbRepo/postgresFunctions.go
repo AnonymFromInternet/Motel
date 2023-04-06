@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/models"
 	"time"
 )
@@ -99,11 +98,8 @@ func (postgresDbRepo *PostgresDbRepo) IsRoomAvailable(roomId int, startDate time
 	row := postgresDbRepo.SqlDB.QueryRowContext(ctx, query, roomId, startDate, endDate)
 	err = row.Scan(&rowAmount)
 	if err != nil {
-		fmt.Println("IF ERROR :", err)
 		return false, err
 	}
-
-	fmt.Println("row :", rowAmount)
 
 	return !(rowAmount > 0), err
 }
@@ -151,10 +147,6 @@ func (postgresDbRepo *PostgresDbRepo) GetAllAvailableRooms(startDate, endDate ti
 }
 
 func (postgresDbRepo *PostgresDbRepo) GetRoomIdBy(roomName string) (int, error) {
-	fmt.Println("GetRoomIdBy()")
-	fmt.Println("roomName :", roomName)
-	fmt.Println("----")
-	// пустое имя
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -168,11 +160,8 @@ func (postgresDbRepo *PostgresDbRepo) GetRoomIdBy(roomName string) (int, error) 
 				    room_name = $1 
 	`
 	row := postgresDbRepo.SqlDB.QueryRowContext(ctx, query, roomName)
-	fmt.Println("row is :", row)
 	err = row.Scan(&roomId)
-	fmt.Println("roomId :", roomId)
 	if err != nil {
-		fmt.Println("GetRoomIdBy error", err)
 		return roomId, err
 	}
 

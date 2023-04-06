@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
@@ -172,8 +171,6 @@ func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWrit
 var TempDataReservationConfirmPage = make(map[string]interface{})
 
 func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println("PostHandlerReservationPage()")
-
 	dates, ok := repository.AppConfig.Session.Get(request.Context(), "dates").(models.Reservation)
 	if !ok {
 		helpers.LogServerError(writer, errors.New("[package handlers]:[funcPostHandlerReservationPage] - cannot cast data type"))
@@ -182,7 +179,6 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 
 	roomName := request.Form.Get("chosen-room")
 	roomId, err := repository.DataBaseRepoInterface.GetRoomIdBy(roomName)
-	fmt.Println("room id is :", roomId)
 	if err != nil {
 		helpers.LogServerError(writer, err)
 		return

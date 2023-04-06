@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type TemplatesData struct {
 	BasicData   map[string]interface{}
@@ -61,4 +63,11 @@ type RoomRestriction struct {
 	Room          Room
 	Reservation   Reservation
 	Restriction   Restriction
+}
+
+type MailData struct {
+	From    string
+	To      string
+	Subject string
+	Content string
 }

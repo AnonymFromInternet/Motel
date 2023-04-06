@@ -105,14 +105,12 @@ func (repository *Repository) PostHandlerAvailabilityPage(writer http.ResponseWr
 
 type jsonResponse struct {
 	IsAvailable bool          `json:"isAvailable"`
-	Message     string        `json:"message"`
 	Rooms       []models.Room `json:"rooms"`
 }
 
 func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.ResponseWriter, request *http.Request) {
 	var err error
 	var isAvailable bool
-	var message string
 	var dates models.Reservation
 
 	startDate, endDate, err := helpers.GetDatesInTimeFormat(request)
@@ -128,7 +126,6 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 	}
 	if len(rooms) > 0 {
 		isAvailable = true
-		message = "Available"
 	}
 	repository.AppConfig.Session.Put(request.Context(), "rooms", rooms)
 
@@ -137,7 +134,7 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 
 	repository.AppConfig.Session.Put(request.Context(), "dates", dates)
 
-	response := jsonResponse{IsAvailable: isAvailable, Message: message, Rooms: rooms}
+	response := jsonResponse{IsAvailable: isAvailable, Rooms: rooms}
 
 	responseInJsonFormat, err := json.MarshalIndent(response, "", " ")
 	if err != nil {

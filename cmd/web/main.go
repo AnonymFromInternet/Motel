@@ -35,6 +35,11 @@ func main() {
 		}
 	}(dataBaseConnectionPool.SQL)
 
+	defer close(appConfig.MailChan)
+
+	listenForMail()
+	fmt.Println("Mail listener successfully started")
+
 	server := &http.Server{
 		Addr:    portNumber,
 		Handler: getHandler(&appConfig),
@@ -44,11 +49,8 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot start server")
 	}
-
-	fmt.Println("Server successfully started")
 }
 
-// Скорее всего нужно будет переименовать
 func prepareAppDataBeforeRun() (*driver.DataBaseConnectionPool, error) {
 	// Register in global encoding decoding for working with Session
 	gob.Register(models.User{})
@@ -58,6 +60,9 @@ func prepareAppDataBeforeRun() (*driver.DataBaseConnectionPool, error) {
 	gob.Register([]models.Room{})
 
 	var err error
+
+	mailChan := make(chan models.MailData)
+	appConfig.MailChan = mailChan
 
 	appConfig.TemplatesCache, err = templatesCache.Create()
 	if err != nil {

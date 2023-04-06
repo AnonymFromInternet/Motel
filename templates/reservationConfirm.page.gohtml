@@ -38,10 +38,14 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="from-to" class="form-label">From to</label>
-                            <input value="From {{$startDate}} to {{$endDate}}" type="text" id="from-to" class="form-control" placeholder="From start date to end date">
+                            <label for="arrival" class="form-label">Arrival</label>
+                            <input value="{{$startDate}}" type="text" id="arrival" class="form-control">
                         </div>
-                        <div class="mb-3"></div>
+
+                        <div class="mb-3">
+                            <label for="departure" class="form-label">Departure</label>
+                            <input value="{{$endDate}}" type="text" id="departure" class="form-control">
+                        </div>
                     </fieldset>
                 </form>
             </div>

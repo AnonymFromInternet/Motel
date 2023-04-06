@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/app"
 	"github.com/AnonymFromInternet/Motel/internal/driver"
 	"github.com/AnonymFromInternet/Motel/internal/helpers"
@@ -10,7 +12,6 @@ import (
 	"github.com/AnonymFromInternet/Motel/internal/repository"
 	repository2 "github.com/AnonymFromInternet/Motel/internal/repository/dbRepo"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -167,33 +168,23 @@ func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWrit
 	}
 }
 
-// TempDataReservationConfirmPage TODO Поменять функционал на передачу этих данных в Session
+// TempDataReservationConfirmPage // TODO перенести этот костыль в session
 var TempDataReservationConfirmPage = make(map[string]interface{})
 
 func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
-	// Это доставать можно уже из session TODO
-	startDate, endDate, err := helpers.GetDatesInTimeFormat(request)
-	if err != nil {
-		helpers.LogServerError(writer, err)
+	fmt.Println("PostHandlerReservationPage()")
+
+	dates, ok := repository.AppConfig.Session.Get(request.Context(), "dates").(models.Reservation)
+	if !ok {
+		helpers.LogServerError(writer, errors.New("[package handlers]:[funcPostHandlerReservationPage] - cannot cast data type"))
 		return
 	}
 
-	// Для этого можно написать запрос к базе данных, где будет спрашиваться айди в зависимости от имени
-	// TODO сейчас в roomId лежит имя. Или просто в хендлерах создать массив, который будет выдавать айдишники комнат по именам
-	roomId, err := strconv.Atoi(request.Form.Get("chosen-room"))
+	roomName := request.Form.Get("chosen-room")
+	roomId, err := repository.DataBaseRepoInterface.GetRoomIdBy(roomName)
 	if err != nil {
 		helpers.LogServerError(writer, err)
 		return
-	}
-
-	// TODO Эта функция вообще должна вызываться в хендлере для страницы про availability и вся проверка должна
-	// TODO проводится совместно с JS и если что сообщать модалкой о проблеме. А данный хендлер этим заниматься не должен
-	// TODO Он должен лишь брать данные по датам и класть их в базу данных
-	isRoomAvailable, err := repository.DataBaseRepoInterface.IsRoomAvailable(roomId, startDate, endDate)
-
-	if !isRoomAvailable {
-		// message for user about trying another dates
-		// return
 	}
 
 	reservation := models.Reservation{
@@ -201,8 +192,8 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 		LastName:    request.Form.Get("last-name"),
 		Email:       request.Form.Get("email"),
 		PhoneNumber: request.Form.Get("phone-number"),
-		StartDate:   startDate,
-		EndDate:     endDate,
+		StartDate:   dates.StartDate,
+		EndDate:     dates.EndDate,
 		RoomId:      roomId,
 	}
 
@@ -214,8 +205,8 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 	}
 
 	roomRestriction := models.RoomRestriction{
-		StartDate:     startDate,
-		EndDate:       endDate,
+		StartDate:     dates.StartDate,
+		EndDate:       dates.EndDate,
 		RoomId:        roomId,
 		ReservationId: reservationId,
 		RestrictionId: helpers.RestrictionTypeReservation,
@@ -229,6 +220,7 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 		return
 	}
 
+	// TODO перенести этот костыль в session
 	TempDataReservationConfirmPage["reservation"] = reservation
 	TempDataReservationConfirmPage["sd"] = reservation.StartDate.Format("2006-01-02")
 	TempDataReservationConfirmPage["ed"] = reservation.EndDate.Format("2006-01-02")

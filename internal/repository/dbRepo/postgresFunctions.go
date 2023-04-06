@@ -149,3 +149,26 @@ func (postgresDbRepo *PostgresDbRepo) GetAllAvailableRooms(startDate, endDate ti
 
 	return rooms, nil
 }
+
+func (postgresDbRepo *PostgresDbRepo) GetRoomIdBy(roomName string) (int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var err error
+	var roomId int
+
+	const query = `
+				select id
+				from rooms
+				where
+				    room_name = $1 
+	`
+	row := postgresDbRepo.SqlDB.QueryRowContext(ctx, query, roomName)
+	err = row.Scan(&roomId)
+	if err != nil {
+		fmt.Println("GetRoomIdBy error", err)
+		return roomId, err
+	}
+
+	return roomId, err
+}

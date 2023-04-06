@@ -79,7 +79,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-danger">Maybe start date is later than end date or vice versa</h5>
+                    <h5 class="modal-title text-danger">Maybe start date is later than end date or vice versa or start date is in the past</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -115,6 +115,7 @@
             const endDate = document.getElementById("end-date").value
             const form = document.getElementById("reservation-form")
             const formData = new FormData(form)
+            const startDateIsInThePast = new Date(startDate).toLocaleDateString() < new Date(Date.now()).toLocaleDateString()
 
             formData.append("csrf_token", "{{ .CSRFToken }}")
 
@@ -123,7 +124,7 @@
                 return
             }
 
-            if ((endDate < startDate) || startDate < Date.now()) {
+            if ((endDate < startDate) || startDateIsInThePast) {
                 showModal("alert-modal-incorrect-dates")
                 return
             }

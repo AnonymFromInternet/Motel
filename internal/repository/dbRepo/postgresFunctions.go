@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/models"
 	"time"
 )
@@ -110,13 +109,7 @@ func (postgresDbRepo *PostgresDbRepo) GetAllAvailableRooms(startDate, endDate ti
 	defer cancel()
 
 	var rooms []models.Room
-	var testRooms []models.Room
-	fmt.Println("startDate :", startDate)
-	fmt.Println("endDate :", endDate)
-	fmt.Println("--------")
-
-	// Вернуть занятые комнаты
-	const testQuery = `
+	const query = `
 					select
 						room_id from room_restrictions rr
 					where
@@ -125,37 +118,6 @@ func (postgresDbRepo *PostgresDbRepo) GetAllAvailableRooms(startDate, endDate ti
 					    ($1 <= rr.end_date and $2 >= rr.end_date)
 	`
 
-	testRows, err := postgresDbRepo.SqlDB.QueryContext(ctx, testQuery, startDate, endDate)
-	if err != nil {
-		return rooms, err
-	}
-
-	for testRows.Next() {
-		var room models.Room
-
-		err = testRows.Scan(&room.ID)
-		if err != nil {
-			return testRooms, err
-		}
-
-		testRooms = append(rooms, room)
-	}
-
-	fmt.Println("test rooms :", testRooms)
-	fmt.Println("----")
-
-	const query = `
-			select
-				r.id, r.room_name
-			from
-			    rooms r
-			where r.id not in (
-								select
-								    room_id from room_restrictions rr
-								where
-								    $1 >= rr.start_date and $2 <= rr.end_date
-			            		)
-	`
 	rows, err := postgresDbRepo.SqlDB.QueryContext(ctx, query, startDate, endDate)
 	if err != nil {
 		return rooms, err

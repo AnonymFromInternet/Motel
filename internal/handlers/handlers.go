@@ -228,6 +228,7 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 func (repository *Repository) GetHandlerReservationConfirmPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "reservationConfirm.page.gohtml"
 	err := render.Template(writer, request, fileName, &models.TemplatesData{
+		// TODO перенести этот костыль в session
 		BasicData: TempDataReservationConfirmPage,
 	})
 	if err != nil {

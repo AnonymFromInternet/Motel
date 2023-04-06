@@ -33,11 +33,9 @@
                                 <div class="modal-header">
                                     <h5 class="modal-title">These rooms are free for the chosen dates</h5>
                                     <br>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button onclick="clearRooms()" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body" id="success-modal-body">
-
-
                                     <p class="mt-3">Now you can go to the reservation page <span class="text-success">↓</span></p>
                                 </div>
                                 <div class="modal-footer">
@@ -161,5 +159,9 @@
             modal.show()
         }
 
+        const clearRooms = () => {
+            const modalBody = document.getElementById("success-modal-body")
+            modalBody.innerText = ""
+        }
     </script>
 {{ end }}

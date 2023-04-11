@@ -42,7 +42,7 @@ func main() {
 
 	server := &http.Server{
 		Addr:    portNumber,
-		Handler: getHandler(&appConfig),
+		Handler: getHandler(), // &appConfig в него передавать необязательно
 	}
 
 	err = server.ListenAndServe()

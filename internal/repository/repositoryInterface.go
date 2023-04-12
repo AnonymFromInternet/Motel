@@ -13,5 +13,5 @@ type DataBaseRepoInterface interface {
 	GetRoomIdBy(roomName string) (int, error)
 	GetAdminBy(id int) (models.Admin, error)
 	UpdateAdmin(admin models.Admin) error
-	Authenticate(email, testPassword string) (int, string, error)
+	AuthenticateGetAdminId(email, testPassword string) (adminId int, hashedPassword string, err error)
 }

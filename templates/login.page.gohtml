@@ -5,11 +5,16 @@
         <div class="container">
             <div class="row">
                 <div class="col">
+                    {{$loginError := index .BasicData "loginError"}}
                     <form action="/login" method="post" class="mt-3">
                         <label>
                             <input type="hidden" value="{{index .CSRFToken}}" name="csrf_token"/>
                         </label>
-                        <h3>Here you can logg in as an Motel owner</h3>
+                        <h3>Here you can logg in as a Motel owner</h3>
+
+                        {{ if $loginError }}
+                            <h5 class="mt-3 text-danger">Incorrect login or password. Please try again</h5>
+                        {{ end }}
 
                         <div class="form-group mt-3">
                             <label for="email">Please enter your email</label>
@@ -30,4 +35,7 @@
             </div>
         </div>
     </div>
+    <script>
+        console.log("Basic data :", "{{$loginError}}")
+    </script>
 {{ end }}

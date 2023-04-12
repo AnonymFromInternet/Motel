@@ -11,6 +11,7 @@ import (
 	"github.com/AnonymFromInternet/Motel/internal/render"
 	"github.com/AnonymFromInternet/Motel/internal/repository"
 	repository2 "github.com/AnonymFromInternet/Motel/internal/repository/dbRepo"
+	"log"
 	"net/http"
 	"time"
 )
@@ -43,10 +44,8 @@ func (repository *Repository) GetHandlerMainPage(writer http.ResponseWriter, req
 
 func (repository *Repository) GetHandlerContactsPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "contacts.page.gohtml"
-	testData := make(map[string]interface{})
-	testData["testData"] = "Test Data"
 
-	err := render.Template(writer, request, fileName, &models.TemplatesData{BasicData: testData})
+	err := render.Template(writer, request, fileName, &models.TemplatesData{})
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
@@ -254,16 +253,62 @@ func (repository *Repository) GetHandlerReservationConfirmPage(writer http.Respo
 
 func (repository *Repository) GetLoginPage(writer http.ResponseWriter, request *http.Request) {
 	const fileName = "login.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+
+	basicData := make(map[string]interface{})
+	loginError := repository.AppConfig.Session.Get(request.Context(), "loginError")
+	basicData["loginError"] = loginError
+
+	err := render.Template(writer, request, fileName, &models.TemplatesData{
+		BasicData: basicData,
+	})
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) PostLoginPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "login.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	// Good practice is to renew token everytime when a user makes login or logout
+	err := repository.AppConfig.Session.RenewToken(request.Context())
+	if err != nil {
+		log.Fatal("[package handlers]:[PostLoginPage] - cannot renew token")
+	}
+
+	email := request.Form.Get("email")
+	password := request.Form.Get("password")
+
+	adminId, _, err := repository.DataBaseRepoInterface.AuthenticateGetAdminId(email, password)
+	if err != nil {
+		repository.AppConfig.Session.Put(request.Context(), "loginError", true)
+		http.Redirect(writer, request, "/login", http.StatusSeeOther)
+
+		return
+	}
+
+	admin, err := repository.DataBaseRepoInterface.GetAdminBy(adminId)
 	if err != nil {
 		helpers.LogServerError(writer, err)
+		return
 	}
+
+	err = repository.DataBaseRepoInterface.UpdateAdmin(admin)
+	if err != nil {
+		helpers.LogServerError(writer, err)
+		return
+	}
+
+	repository.AppConfig.Session.Put(request.Context(), "adminEmail", admin.Email)
+
+	http.Redirect(writer, request, "/main", http.StatusSeeOther)
+}
+
+func (repository *Repository) Logout(w http.ResponseWriter, r *http.Request) {
+	_ = repository.AppConfig.Session.Destroy(r.Context())
+	_ = repository.AppConfig.Session.RenewToken(r.Context())
+
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
+func (repository *Repository) GetAdminDashboard(w http.ResponseWriter, r *http.Request) {
+	const fileName = "adminDashboard.page.gohtml"
+	_ = render.Template(w, r, fileName, &models.TemplatesData{})
 }

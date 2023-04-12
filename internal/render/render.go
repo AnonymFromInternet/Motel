@@ -18,6 +18,16 @@ var appConfiguration *app.Config
 func addDataToTemplate(templateData *models.TemplatesData, request *http.Request) *models.TemplatesData {
 	// it is possible to add data here
 	templateData.CSRFToken = nosurf.Token(request)
+
+	if appConfiguration.Session.Exists(request.Context(), "adminEmail") {
+		templateData.IsLoggedIn = true
+		basicData := make(map[string]interface{})
+		adminEmail := appConfiguration.Session.Get(request.Context(), "adminEmail")
+		basicData["adminEmail"] = adminEmail
+		templateData.BasicData = make(map[string]interface{})
+		templateData.BasicData["adminEmail"] = adminEmail
+	}
+
 	return templateData
 }
 

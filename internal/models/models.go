@@ -10,6 +10,7 @@ type TemplatesData struct {
 	Warning     string
 	CSRFToken   string
 	ShowMessage string
+	IsLoggedIn  bool
 }
 
 type Admin struct {

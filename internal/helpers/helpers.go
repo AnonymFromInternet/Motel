@@ -48,3 +48,7 @@ func GetDatesInTimeFormat(request *http.Request) (time.Time, time.Time, error) {
 
 	return startDate, endDate, nil
 }
+
+func IsLoggedIn(r *http.Request) bool {
+	return appConfig.Session.Exists(r.Context(), "adminEmail")
+}

@@ -225,27 +225,24 @@ func (postgresDbRepo *PostgresDbRepo) UpdateAdmin(admin models.Admin) error {
 	return nil
 }
 
-func (postgresDbRepo *PostgresDbRepo) Authenticate(email, testPassword string) (int, string, error) {
+func (postgresDbRepo *PostgresDbRepo) AuthenticateGetAdminId(email, testPassword string) (adminId int, hashedPassword string, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	var id int
-	var hashedPassword string
-
-	const query = `select id, password from users where email = $1`
+	const query = `select id, password from admins where email = $1`
 
 	row := postgresDbRepo.SqlDB.QueryRowContext(ctx, query, email)
-	err := row.Scan(&id, &hashedPassword)
+	err = row.Scan(&adminId, &hashedPassword)
 	if err != nil {
-		return id, hashedPassword, err
+		return adminId, hashedPassword, err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(testPassword))
 	if err == bcrypt.ErrMismatchedHashAndPassword {
-		return id, hashedPassword, errors.New("invalid password")
+		return adminId, hashedPassword, errors.New("invalid password")
 	} else if err != nil {
-		return id, hashedPassword, err
+		return adminId, hashedPassword, err
 	}
 
-	return id, hashedPassword, err
+	return adminId, hashedPassword, err
 }

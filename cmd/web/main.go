@@ -24,7 +24,7 @@ var appConfig app.Config
 var session *scs.SessionManager
 
 func main() {
-	dataBaseConnectionPool, err := prepareAppDataBeforeRun()
+	dbConnectionPool, err := prepareAppDataBeforeRunGetDBConnectionPool()
 	if err != nil {
 		log.Fatal("cannot prepare app data before server starting")
 	}
@@ -33,7 +33,7 @@ func main() {
 		if err != nil {
 			log.Fatal("cannot close db connection pool")
 		}
-	}(dataBaseConnectionPool.SQL)
+	}(dbConnectionPool.SQL)
 
 	defer close(appConfig.MailChan)
 
@@ -51,9 +51,9 @@ func main() {
 	}
 }
 
-func prepareAppDataBeforeRun() (*driver.DataBaseConnectionPool, error) {
+func prepareAppDataBeforeRunGetDBConnectionPool() (*driver.DataBaseConnectionPool, error) {
 	// Register in global encoding decoding for working with Session
-	gob.Register(models.User{})
+	gob.Register(models.Admin{})
 	gob.Register(models.Reservation{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
@@ -84,7 +84,7 @@ func prepareAppDataBeforeRun() (*driver.DataBaseConnectionPool, error) {
 	// Connection to the database
 	dataBaseConnectionPool, err := driver.GetDataBaseConnectionPool("host=localhost port=5432 dbname=Motel user=arturkeil password=")
 	if err != nil {
-		log.Fatal("[main]:[prepareAppDataBeforeRun] - cannot get dataBaseConnectionPool")
+		log.Fatal("[main]:[prepareAppDataBeforeRunGetDBConnectionPool] - cannot get dataBaseConnectionPool")
 	}
 
 	mainRepository := handlers.GetMainRepository(&appConfig, dataBaseConnectionPool)

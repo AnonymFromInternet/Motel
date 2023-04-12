@@ -12,7 +12,7 @@ type TemplatesData struct {
 	ShowMessage string
 }
 
-type User struct {
+type Admin struct {
 	ID          int
 	FirstName   string
 	LastName    string

@@ -11,4 +11,7 @@ type DataBaseRepoInterface interface {
 	IsRoomAvailable(roomId int, startDate time.Time, endDate time.Time) (bool, error)
 	GetAllAvailableRooms(startDate, endDate time.Time) ([]models.Room, error)
 	GetRoomIdBy(roomName string) (int, error)
+	GetAdminBy(id int) (models.Admin, error)
+	UpdateAdmin(admin models.Admin) error
+	Authenticate(email, testPassword string) (int, string, error)
 }

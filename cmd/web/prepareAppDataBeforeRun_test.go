@@ -3,7 +3,7 @@ package main
 import "testing"
 
 func TestPrepareAppDataBeforeRun(t *testing.T) {
-	err := prepareAppDataBeforeRun()
+	err := prepareAppDataBeforeRunGetDBConnectionPool()
 	if err != nil {
 		t.Errorf("[func TestPrepareAppDataBeforeRun] - cannot run function for tests")
 	}

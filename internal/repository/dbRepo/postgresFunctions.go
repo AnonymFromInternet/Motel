@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"github.com/AnonymFromInternet/Motel/internal/models"
+	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
@@ -43,8 +45,6 @@ func (postgresDbRepo *PostgresDbRepo) InsertReservationGetReservationId(reservat
 	if err != nil {
 		return reservationId, err
 	}
-
-	// Проверить сам скан на наличие ошибок
 
 	return reservationId, nil
 }
@@ -166,4 +166,86 @@ func (postgresDbRepo *PostgresDbRepo) GetRoomIdBy(roomName string) (int, error) 
 	}
 
 	return roomId, err
+}
+
+func (postgresDbRepo *PostgresDbRepo) GetAdminBy(id int) (models.Admin, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var err error
+	var admin models.Admin
+
+	const query = `
+				select id, first_name, last_name, email, access_level, password, created_at, updated_at
+				from admins
+				where
+				    id = $1 
+	`
+
+	row := postgresDbRepo.SqlDB.QueryRowContext(ctx, query, id)
+	err = row.Scan(
+		&admin.ID,
+		&admin.FirstName,
+		&admin.LastName,
+		&admin.Email,
+		&admin.AccessLevel,
+		&admin.Password,
+		&admin.CreatedAt,
+		&admin.UpdatedAt,
+	)
+	if err != nil {
+		return admin, err
+	}
+
+	return admin, err
+}
+
+func (postgresDbRepo *PostgresDbRepo) UpdateAdmin(admin models.Admin) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var err error
+	const query = `
+				update admins set first_name = $1, last_name = $2, email = $3, access_level = $4, updated_at = $5 
+	`
+
+	_, err = postgresDbRepo.SqlDB.ExecContext(
+		ctx,
+		query,
+		admin.FirstName,
+		admin.LastName,
+		admin.Email,
+		admin.AccessLevel,
+		time.Now(),
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (postgresDbRepo *PostgresDbRepo) Authenticate(email, testPassword string) (int, string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var id int
+	var hashedPassword string
+
+	const query = `select id, password from users where email = $1`
+
+	row := postgresDbRepo.SqlDB.QueryRowContext(ctx, query, email)
+	err := row.Scan(&id, &hashedPassword)
+	if err != nil {
+		return id, hashedPassword, err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(testPassword))
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return id, hashedPassword, errors.New("invalid password")
+	} else if err != nil {
+		return id, hashedPassword, err
+	}
+
+	return id, hashedPassword, err
 }

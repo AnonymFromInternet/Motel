@@ -251,3 +251,19 @@ func (repository *Repository) GetHandlerReservationConfirmPage(writer http.Respo
 		helpers.LogServerError(writer, err)
 	}
 }
+
+func (repository *Repository) GetLoginPage(writer http.ResponseWriter, request *http.Request) {
+	const fileName = "login.page.gohtml"
+	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	if err != nil {
+		helpers.LogServerError(writer, err)
+	}
+}
+
+func (repository *Repository) PostLoginPage(writer http.ResponseWriter, request *http.Request) {
+	const fileName = "login.page.gohtml"
+	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	if err != nil {
+		helpers.LogServerError(writer, err)
+	}
+}

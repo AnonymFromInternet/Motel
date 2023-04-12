@@ -22,10 +22,11 @@ func getHandler() http.Handler { // // &appConfig в него передават
 	multiplexer.Get("/availability", handlers.Repo.GetHandlerAvailabilityPage)
 	multiplexer.Get("/reservation", handlers.Repo.GetHandlerReservationPage)
 	multiplexer.Get("/reservation-confirm", handlers.Repo.GetHandlerReservationConfirmPage)
+	multiplexer.Get("/login", handlers.Repo.GetLoginPage)
 
 	multiplexer.Post("/availability", handlers.Repo.PostHandlerAvailabilityPage)
 	multiplexer.Post("/availability-json", handlers.Repo.PostHandlerAvailabilityPageJSON)
-	multiplexer.Post("/reservation", handlers.Repo.PostHandlerReservationPage)
+	multiplexer.Post("/login", handlers.Repo.PostLoginPage)
 
 	fileServer := http.FileServer(http.Dir("./static/")) // путь указывается относительно рута
 	multiplexer.Handle("/static/*", http.StripPrefix("/static/", fileServer))

@@ -23,7 +23,6 @@ func SessionLoadMiddleware(next http.Handler) http.Handler {
 	return session.LoadAndSave(next)
 }
 
-// AuthMiddleware TODO Delete???
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !helpers.IsLoggedIn(request) {

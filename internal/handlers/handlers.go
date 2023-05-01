@@ -312,3 +312,18 @@ func (repository *Repository) GetAdminDashboard(w http.ResponseWriter, r *http.R
 	const templateName = "adminDashboard.page.gohtml"
 	_ = render.Template(w, r, templateName, &models.TemplatesData{})
 }
+
+func (repository *Repository) GetClientsReservations(w http.ResponseWriter, r *http.Request) {
+	const templateName = "clients-reservations.page.gohtml"
+	_ = render.Template(w, r, templateName, &models.TemplatesData{})
+}
+
+func (repository *Repository) GetAdminsReservations(w http.ResponseWriter, r *http.Request) {
+	const templateName = "admins-reservations.page.gohtml"
+	_ = render.Template(w, r, templateName, &models.TemplatesData{})
+}
+
+func (repository *Repository) GetReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+	const templateName = "reservations-calendar.page.gohtml"
+	_ = render.Template(w, r, templateName, &models.TemplatesData{})
+}

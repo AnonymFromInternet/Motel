@@ -10,7 +10,7 @@
                         <label>
                             <input type="hidden" value="{{index .CSRFToken}}" name="csrf_token"/>
                         </label>
-                        <h3>Here you can logg in as a Motel owner</h3>
+                        <h3>Here you can logging in as a Motel owner</h3>
 
                         {{ if $loginError }}
                             <h5 class="mt-3 text-danger">Incorrect login or password. Please try again</h5>
@@ -22,7 +22,7 @@
                             <br>
 
                             <label for="password">Please enter your password</label>
-                            <input class="form-control" name="password" id="password" type="text" required />
+                            <input class="form-control" name="password" id="password" type="password" required />
                             <br>
 
                             <button type="submit" class="btn btn-primary">Login</button>

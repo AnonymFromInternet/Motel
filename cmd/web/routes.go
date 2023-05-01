@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func getHandler() http.Handler { // // &appConfig в него передавать необязательно
+func getHandler() http.Handler { // &appConfig в него передавать необязательно
 	multiplexer := chi.NewRouter()
 
 	multiplexer.Use(middleware.Recoverer)
@@ -33,9 +33,9 @@ func getHandler() http.Handler { // // &appConfig в него передават
 		mux.Use(AuthMiddleware)
 
 		mux.Get("/dashboard", handlers.Repo.GetAdminDashboard)
-		mux.Get("/clients-reservations", handlers.Repo.GetClientsReservations)
-		mux.Get("/admins-reservations", handlers.Repo.GetAdminsReservations)
-		mux.Get("/reservations-calendar", handlers.Repo.GetReservationsCalendar)
+		mux.Get("/clients-reservations", handlers.Repo.GetAdminClientsReservations)
+		mux.Get("/admins-reservations", handlers.Repo.GetAdminAdminsReservations)
+		mux.Get("/reservations-calendar", handlers.Repo.GetAdminReservationsCalendar)
 	})
 
 	fileServer := http.FileServer(http.Dir("./static/")) // путь указывается относительно рута

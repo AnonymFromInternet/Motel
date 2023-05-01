@@ -246,3 +246,52 @@ func (postgresDbRepo *PostgresDbRepo) AuthenticateGetAdminId(email, testPassword
 
 	return adminId, hashedPassword, err
 }
+
+func (postgresDbRepo *PostgresDbRepo) GetClientsOrAdminsReservations(restrictionType int) ([]models.Reservation, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var err error
+	var reservations []models.Reservation
+
+	const query = `select * from reservations rs
+					where rs.id in (
+					    select * from room_restrictions
+					    where restriction_id = $1
+					)
+	`
+
+	rows, err := postgresDbRepo.SqlDB.QueryContext(ctx, query)
+	if err != nil {
+		return reservations, err
+	}
+
+	for rows.Next() {
+		var reservation models.Reservation
+
+		err = rows.Scan(
+			&reservation.ID,
+			&reservation.FirstName,
+			&reservation.LastName,
+			&reservation.Email,
+			&reservation.PhoneNumber,
+			&reservation.StartDate,
+			&reservation.EndDate,
+			&reservation.RoomId,
+			&reservation.CreatedAt,
+			&reservation.UpdatedAt,
+			&reservation.Room.Name,
+		)
+		if err != nil {
+			return reservations, err
+		}
+
+		reservations = append(reservations, reservation)
+	}
+
+	if err = rows.Err(); err != nil {
+		return reservations, err
+	}
+
+	return reservations, err
+}

@@ -313,17 +313,41 @@ func (repository *Repository) GetAdminDashboard(w http.ResponseWriter, r *http.R
 	_ = render.Template(w, r, templateName, &models.TemplatesData{})
 }
 
-func (repository *Repository) GetClientsReservations(w http.ResponseWriter, r *http.Request) {
+func (repository *Repository) GetAdminClientsReservations(w http.ResponseWriter, r *http.Request) {
 	const templateName = "clients-reservations.page.gohtml"
-	_ = render.Template(w, r, templateName, &models.TemplatesData{})
+
+	clientsReservations, err := repository.DataBaseRepoInterface.GetClientsOrAdminsReservations(helpers.RestrictionTypeReservation)
+	if err != nil {
+		helpers.LogServerError(w, err)
+		return
+	}
+
+	basicData := make(map[string]interface{})
+	basicData["clientsReservations"] = clientsReservations
+
+	_ = render.Template(w, r, templateName, &models.TemplatesData{
+		BasicData: basicData,
+	})
 }
 
-func (repository *Repository) GetAdminsReservations(w http.ResponseWriter, r *http.Request) {
+func (repository *Repository) GetAdminAdminsReservations(w http.ResponseWriter, r *http.Request) {
 	const templateName = "admins-reservations.page.gohtml"
-	_ = render.Template(w, r, templateName, &models.TemplatesData{})
+
+	adminsReservations, err := repository.DataBaseRepoInterface.GetClientsOrAdminsReservations(helpers.RestrictionTypeService)
+	if err != nil {
+		helpers.LogServerError(w, err)
+		return
+	}
+
+	basicData := make(map[string]interface{})
+	basicData["adminsReservations"] = adminsReservations
+
+	_ = render.Template(w, r, templateName, &models.TemplatesData{
+		BasicData: basicData,
+	})
 }
 
-func (repository *Repository) GetReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+func (repository *Repository) GetAdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	const templateName = "reservations-calendar.page.gohtml"
 	_ = render.Template(w, r, templateName, &models.TemplatesData{})
 }

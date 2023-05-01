@@ -14,4 +14,5 @@ type DataBaseRepoInterface interface {
 	GetAdminBy(id int) (models.Admin, error)
 	UpdateAdmin(admin models.Admin) error
 	AuthenticateGetAdminId(email, testPassword string) (adminId int, hashedPassword string, err error)
+	GetClientsOrAdminsReservations(restrictionType int) ([]models.Reservation, error)
 }

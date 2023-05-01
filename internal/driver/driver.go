@@ -15,7 +15,7 @@ type DataBaseConnectionPool struct {
 
 const maxOpenDBConnections = 15
 const maxIdleDBConnections = 10
-const maxDBConnectionLifeTime = 8 * time.Minute
+const maxDBConnectionLifeTime = 3 * time.Minute
 
 func GetDataBaseConnectionPool(dataSourceName string) (*DataBaseConnectionPool, error) {
 	sqlDBConnPool, err := getSqlDBConnPool(dataSourceName)

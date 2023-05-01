@@ -35,49 +35,49 @@ func SetPkgRepoVariable(repository *Repository) {
 }
 
 func (repository *Repository) GetHandlerMainPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "main.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	const templateName = "main.page.gohtml"
+	err := render.Template(writer, request, templateName, &models.TemplatesData{})
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) GetHandlerContactsPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "contacts.page.gohtml"
+	const templateName = "contacts.page.gohtml"
 
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	err := render.Template(writer, request, templateName, &models.TemplatesData{})
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) GetHandlerAboutPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "about.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	const templateName = "about.page.gohtml"
+	err := render.Template(writer, request, templateName, &models.TemplatesData{})
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) GetHandlerRoomPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "room.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	const templateName = "room.page.gohtml"
+	err := render.Template(writer, request, templateName, &models.TemplatesData{})
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) GetHandlerBlueRoomPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "blueRoom.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	const templateName = "blueRoom.page.gohtml"
+	err := render.Template(writer, request, templateName, &models.TemplatesData{})
 	if err != nil {
 		helpers.LogServerError(writer, err)
 	}
 }
 
 func (repository *Repository) GetHandlerAvailabilityPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "availability.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{})
+	const templateName = "availability.page.gohtml"
+	err := render.Template(writer, request, templateName, &models.TemplatesData{})
 
 	if err != nil {
 		helpers.LogServerError(writer, err)
@@ -94,8 +94,8 @@ func (repository *Repository) PostHandlerAvailabilityPage(writer http.ResponseWr
 	basicData["startDate"] = startDate
 	basicData["endDate"] = endDate
 
-	const fileName = "availability.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{
+	const templateName = "availability.page.gohtml"
+	err := render.Template(writer, request, templateName, &models.TemplatesData{
 		BasicData: basicData,
 	})
 	if err != nil {
@@ -151,12 +151,12 @@ func (repository *Repository) PostHandlerAvailabilityPageJSON(writer http.Respon
 }
 
 func (repository *Repository) GetHandlerReservationPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "reservation.page.gohtml"
+	const templateName = "reservation.page.gohtml"
 	basicData := make(map[string]interface{})
 	basicData["rooms"] = repository.AppConfig.Session.Get(request.Context(), "rooms")
 	basicData["dates"] = repository.AppConfig.Session.Get(request.Context(), "dates")
 
-	err := render.Template(writer, request, fileName, &models.TemplatesData{
+	err := render.Template(writer, request, templateName, &models.TemplatesData{
 		BasicData: basicData,
 	})
 	if err != nil {
@@ -241,8 +241,8 @@ func (repository *Repository) PostHandlerReservationPage(writer http.ResponseWri
 }
 
 func (repository *Repository) GetHandlerReservationConfirmPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "reservationConfirm.page.gohtml"
-	err := render.Template(writer, request, fileName, &models.TemplatesData{
+	const templateName = "reservationConfirm.page.gohtml"
+	err := render.Template(writer, request, templateName, &models.TemplatesData{
 		// TODO перенести этот костыль в session
 		BasicData: TempDataReservationConfirmPage,
 	})
@@ -252,13 +252,13 @@ func (repository *Repository) GetHandlerReservationConfirmPage(writer http.Respo
 }
 
 func (repository *Repository) GetLoginPage(writer http.ResponseWriter, request *http.Request) {
-	const fileName = "login.page.gohtml"
+	const templateName = "login.page.gohtml"
 
 	basicData := make(map[string]interface{})
 	loginError := repository.AppConfig.Session.Get(request.Context(), "loginError")
 	basicData["loginError"] = loginError
 
-	err := render.Template(writer, request, fileName, &models.TemplatesData{
+	err := render.Template(writer, request, templateName, &models.TemplatesData{
 		BasicData: basicData,
 	})
 	if err != nil {
@@ -309,6 +309,6 @@ func (repository *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repository *Repository) GetAdminDashboard(w http.ResponseWriter, r *http.Request) {
-	const fileName = "adminDashboard.page.gohtml"
-	_ = render.Template(w, r, fileName, &models.TemplatesData{})
+	const templateName = "adminDashboard.page.gohtml"
+	_ = render.Template(w, r, templateName, &models.TemplatesData{})
 }

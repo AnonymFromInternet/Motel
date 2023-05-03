@@ -14,6 +14,15 @@ func getHandler() http.Handler { // &appConfig в него передавать 
 	multiplexer.Use(SessionLoadMiddleware)
 	multiplexer.Use(CSRFMiddleware)
 
+	multiplexer.Route("/admin", func(mux chi.Router) {
+		mux.Use(AuthMiddleware)
+
+		mux.Get("/dashboard", handlers.Repo.GetAdminDashboard)
+		mux.Get("/clients-reservations", handlers.Repo.GetAdminClientsReservations)
+		mux.Get("/admins-reservations", handlers.Repo.GetAdminAdminsReservations)
+		mux.Get("/reservations-calendar", handlers.Repo.GetAdminReservationsCalendar)
+	})
+
 	multiplexer.Get("/main", handlers.Repo.GetHandlerMainPage)
 	multiplexer.Get("/about", handlers.Repo.GetHandlerAboutPage)
 	multiplexer.Get("/room", handlers.Repo.GetHandlerRoomPage)
@@ -28,15 +37,6 @@ func getHandler() http.Handler { // &appConfig в него передавать 
 	multiplexer.Post("/availability", handlers.Repo.PostHandlerAvailabilityPage)
 	multiplexer.Post("/availability-json", handlers.Repo.PostHandlerAvailabilityPageJSON)
 	multiplexer.Post("/login", handlers.Repo.PostLoginPage)
-
-	multiplexer.Route("/admin", func(mux chi.Router) {
-		mux.Use(AuthMiddleware)
-
-		mux.Get("/dashboard", handlers.Repo.GetAdminDashboard)
-		mux.Get("/clients-reservations", handlers.Repo.GetAdminClientsReservations)
-		mux.Get("/admins-reservations", handlers.Repo.GetAdminAdminsReservations)
-		mux.Get("/reservations-calendar", handlers.Repo.GetAdminReservationsCalendar)
-	})
 
 	fileServer := http.FileServer(http.Dir("./static/")) // путь указывается относительно рута
 	multiplexer.Handle("/static/*", http.StripPrefix("/static/", fileServer))

@@ -35,6 +35,8 @@ func Template(writer http.ResponseWriter, request *http.Request, templateFirstNa
 	var templates map[string]*template.Template
 	var err error
 
+	fmt.Println("templateData :", templateData)
+
 	if appConfiguration.IsDevelopmentMode {
 		templates, err = templatesCache.Create()
 		if err != nil {

@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/AnonymFromInternet/Motel/internal/models"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -248,6 +249,8 @@ func (postgresDbRepo *PostgresDbRepo) AuthenticateGetAdminId(email, testPassword
 }
 
 func (postgresDbRepo *PostgresDbRepo) GetClientsOrAdminsReservations(restrictionType int) ([]models.Reservation, error) {
+	fmt.Println("GetClientsOrAdminsReservations()")
+	fmt.Println("------")
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 

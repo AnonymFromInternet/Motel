@@ -317,7 +317,6 @@ func (repository *Repository) GetAdminClientsReservations(w http.ResponseWriter,
 	const templateName = "clients-reservations.page.gohtml"
 
 	clientsReservations, err := repository.DataBaseRepoInterface.GetClientsOrAdminsReservations(helpers.RestrictionTypeReservation)
-	fmt.Println("clientsReservations :", clientsReservations)
 	if err != nil {
 		helpers.LogServerError(w, err)
 		return
@@ -326,22 +325,27 @@ func (repository *Repository) GetAdminClientsReservations(w http.ResponseWriter,
 	basicData := make(map[string]interface{})
 	basicData["clientsReservations"] = clientsReservations
 
-	_ = render.Template(w, r, templateName, &models.TemplatesData{
+	err = render.Template(w, r, templateName, &models.TemplatesData{
 		BasicData: basicData,
 	})
+	if err != nil {
+		helpers.LogServerError(w, err)
+	}
 }
 
 func (repository *Repository) GetAdminAdminsReservations(w http.ResponseWriter, r *http.Request) {
 	const templateName = "admins-reservations.page.gohtml"
 
-	adminsReservations, err := repository.DataBaseRepoInterface.GetClientsOrAdminsReservations(helpers.RestrictionTypeService)
-	if err != nil {
-		helpers.LogServerError(w, err)
-		return
-	}
+	//adminsReservations, err := repository.DataBaseRepoInterface.GetClientsOrAdminsReservations(helpers.RestrictionTypeService)
+	//if err != nil {
+	//	helpers.LogServerError(w, err)
+	//	return
+	//}
+	//
 
+	// происходит какая то жопа в мидлвере, так как если не логиниться, то все будет работать нормально
 	basicData := make(map[string]interface{})
-	basicData["adminsReservations"] = adminsReservations
+	basicData["adminsReservations"] = "adminsReservations"
 
 	_ = render.Template(w, r, templateName, &models.TemplatesData{
 		BasicData: basicData,

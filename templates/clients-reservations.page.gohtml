@@ -1,5 +1,9 @@
-{{template "admin_base"}}
+{{template "admin_base" .}}
 
 {{define "content"}}
-    clients reservations
+    {{$test := index .BasicData "clientsReservations"}}
+
+    <script>
+        console.log('$test :', "{{$test}}")
+    </script>
 {{end}}

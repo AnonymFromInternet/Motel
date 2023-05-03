@@ -254,14 +254,16 @@ func (postgresDbRepo *PostgresDbRepo) GetClientsOrAdminsReservations(restriction
 	var err error
 	var reservations []models.Reservation
 
-	const query = `select * from reservations rs
-					where rs.id in (
-					    select * from room_restrictions
-					    where restriction_id = $1
-					)
+	const query = `
+						select res.id, res.first_name, res.last_name, res.email, res.phone, res.start_date, res.end_date, res.room_id,
+						       res.created_at, res.updated_at
+						from reservations res
+						inner join room_restrictions rr on (res.id = rr.reservation_id)
+						where rr.restriction_id = $1
 	`
 
-	rows, err := postgresDbRepo.SqlDB.QueryContext(ctx, query)
+	rows, err := postgresDbRepo.SqlDB.QueryContext(ctx, query, restrictionType)
+
 	if err != nil {
 		return reservations, err
 	}
@@ -280,7 +282,6 @@ func (postgresDbRepo *PostgresDbRepo) GetClientsOrAdminsReservations(restriction
 			&reservation.RoomId,
 			&reservation.CreatedAt,
 			&reservation.UpdatedAt,
-			&reservation.Room.Name,
 		)
 		if err != nil {
 			return reservations, err

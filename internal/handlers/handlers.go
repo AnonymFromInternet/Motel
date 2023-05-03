@@ -317,6 +317,7 @@ func (repository *Repository) GetAdminClientsReservations(w http.ResponseWriter,
 	const templateName = "clients-reservations.page.gohtml"
 
 	clientsReservations, err := repository.DataBaseRepoInterface.GetClientsOrAdminsReservations(helpers.RestrictionTypeReservation)
+	fmt.Println("clientsReservations :", clientsReservations)
 	if err != nil {
 		helpers.LogServerError(w, err)
 		return

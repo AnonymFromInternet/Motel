@@ -9,4 +9,4 @@
 #### Also [jackc's pgx](github.com/jackc/pgx)
 #### Also [bootstrap](https://getbootstrap.com/)
 #### No ORM
-#### Monolithic architecture
+#### Noodles architecture
